@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rotation Équipe">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Rotation Équipe</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--ok:#16a34a;--warn:#d97706;--danger:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 28px)}
+.app{max-width:760px;margin:auto}.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #00000010}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}button,input,select{font:inherit}button{border:0;border-radius:14px;padding:14px;font-weight:700}.service{background:#f9fafb;border:1px solid var(--line);text-align:left}.service.active{background:#111827;color:#fff}
+.primary{background:#111827;color:#fff}.success{background:var(--ok);color:#fff}.secondary{background:#e5e7eb}.warning{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.danger{background:#fee2e2;color:#991b1b}
+.next{text-align:center;padding:20px;border-radius:16px;background:#f9fafb;border:1px solid var(--line)}.next-name{font-size:30px;font-weight:900;margin:8px 0}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e5e7eb;font-size:12px;font-weight:700}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.section{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.section h2{margin:0;font-size:18px}
+ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--line)}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.meta{font-size:12px;color:var(--muted)}
+.status{padding:5px 8px;border-radius:999px;font-size:12px;background:#dcfce7;color:#166534}.status.absent{background:#fee2e2;color:#991b1b}
+.history{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:88vh;overflow:auto}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>Rotation équipe</h1><div class="small" id="date"></div></div><button class="secondary" onclick="openSettings()">⚙️</button></header>
+<div class="card"><div class="section"><h2>Service</h2><span class="badge" id="cycle">Cycle manuel</span></div><div class="grid" id="services"></div></div>
+<div class="card"><div class="next"><div class="small" id="actionLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><div class="actions"><button class="success" onclick="validateTurn()">✅ Valider</button><button class="warning" onclick="skipTurn()">⏭️ Passer</button></div></div>
+<div class="card"><div class="section"><h2>Ordre actuel</h2><button class="secondary" onclick="undo()">↩️ Annuler</button></div><ol id="order"></ol></div>
+<div class="card"><div class="section"><h2>Présences</h2><button class="secondary" onclick="allPresent()">Tous présents</button></div><div id="presence"></div></div>
+<div class="card"><div class="section"><h2>Historique</h2><button class="danger" onclick="clearHistory()">Effacer</button></div><div id="history"></div></div>
+</div>
+
+<div class="modal" id="modal"><div class="sheet">
+<div class="section"><h2>Configuration</h2><button class="secondary" onclick="closeSettings()">Fermer</button></div>
+<p class="small">Saisis les six personnes dans l’ordre initial d’ancienneté. Le chef reste hors rotation.</p>
+<div id="editors"></div>
+<label>Date correspondant au Jour 1 — Fermeture</label><input type="date" id="cycleStart">
+<div class="actions"><button class="primary" onclick="saveSettings()">Enregistrer</button><button class="danger" onclick="resetApp()">Réinitialiser</button></div>
+</div></div>
+
+<script>
+const SERVICES=[
+{id:"fermeture",name:"Fermeture",hours:"22h → 6h",action:"Prochain départ"},
+{id:"deuxieme",name:"Deuxième nuit",hours:"19h → 5h",action:"Prochain départ"},
+{id:"coupure",name:"Coupure",hours:"16h–19h / 22h–3h",action:"Prochain retour"},
+{id:"apresmidi",name:"Après-midi",hours:"14h → 19h",action:"Prochain départ"}];
+const defaults=[
+{id:"p1",name:"Sous-chef 1",role:"Sous-chef",present:true},{id:"p2",name:"Sous-chef 2",role:"Sous-chef",present:true},
+{id:"p3",name:"Employé 1",role:"Employé",present:true},{id:"p4",name:"Employé 2",role:"Employé",present:true},
+{id:"p5",name:"Employé 3",role:"Employé",present:true},{id:"p6",name:"Employé 4",role:"Employé",present:true}];
+let state=JSON.parse(localStorage.getItem("rotationEquipePWA"))||{people:defaults,rotations:{fermeture:["p1","p2","p3","p4","p5","p6"],deuxieme:["p1","p2","p3","p4","p5","p6"],coupure:["p1","p2","p3","p4","p5","p6"],apresmidi:["p1","p2","p3","p4","p5","p6"]},selected:"fermeture",history:[],undo:[],cycleStart:""};
+const save=()=>localStorage.setItem("rotationEquipePWA",JSON.stringify(state));
+const getP=id=>state.people.find(p=>p.id===id); const svc=()=>SERVICES.find(s=>s.id===state.selected);
+function eligible(){return state.rotations[state.selected].filter(id=>getP(id)?.present)}
+function render(){
+document.getElementById("date").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+const sroot=document.getElementById("services");sroot.innerHTML="";
+SERVICES.forEach(s=>{let b=document.createElement("button");b.className="service"+(s.id===state.selected?" active":"");b.innerHTML="<b>"+s.name+"</b><div class='small'>"+s.hours+"</div>";b.onclick=()=>{state.selected=s.id;save();render()};sroot.appendChild(b)});
+const e=eligible();document.getElementById("actionLabel").textContent=svc().action;
+document.getElementById("nextName").textContent=e.length?getP(e[0]).name:"Aucune personne présente";document.getElementById("nextRole").textContent=e.length?getP(e[0]).role:"—";
+const order=document.getElementById("order");order.innerHTML="";state.rotations[state.selected].forEach(id=>{let p=getP(id),li=document.createElement("li");li.innerHTML=`<div class="row"><div><b>${p.name}</b><div class="meta">${p.role}</div></div><span class="status ${p.present?"":"absent"}">${p.present?"Présent":"Absent"}</span></div>`;order.appendChild(li)});
+document.getElementById("presence").innerHTML=state.people.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><div><b>${p.name}</b><div class="meta">${p.role}</div></div><button class="${p.present?"secondary":"danger"}" onclick="toggle('${p.id}')">${p.present?"Présent":"Absent"}</button></div>`).join("");
+document.getElementById("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="history"><b>${getP(h.personId)?.name||"Personne"}</b> — ${SERVICES.find(x=>x.id===h.serviceId)?.name}<br><span class="small">${h.type} · ${new Date(h.date).toLocaleString("fr-FR")}</span></div>`).join(""):"<div class='small'>Aucun événement.</div>";
+renderCycle();
+}
+function snapshot(){state.undo.push(JSON.stringify({...state,undo:[]})); if(state.undo.length>20)state.undo.shift()}
+function validateTurn(){let e=eligible();if(!e.length)return alert("Aucune personne présente.");snapshot();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({personId:id,serviceId:state.selected,type:state.selected==="coupure"?"Retour validé":"Départ validé",date:new Date().toISOString()});save();render()}
+function skipTurn(){let e=eligible();if(!e.length)return;snapshot();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({personId:id,serviceId:state.selected,type:"Passé exceptionnellement",date:new Date().toISOString()});save();render()}
+function toggle(id){getP(id).present=!getP(id).present;save();render()} function allPresent(){state.people.forEach(p=>p.present=true);save();render()}
+function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let old=state.undo.pop(),keep=state.undo;state=JSON.parse(old);state.undo=keep;save();render()}
+function clearHistory(){if(confirm("Effacer l’historique ?")){state.history=[];save();render()}}
+function renderCycle(){let b=document.getElementById("cycle");if(!state.cycleStart){b.textContent="Cycle manuel";return}let start=new Date(state.cycleStart+"T00:00:00"),today=new Date();today.setHours(0,0,0,0);let i=((Math.floor((today-start)/86400000)%6)+6)%6;let labels=["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"];b.textContent=labels[i]}
+function openSettings(){document.getElementById("editors").innerHTML=state.people.map((p,i)=>`<div class="card" style="box-shadow:none;border:1px solid var(--line)"><label>Nom ${i+1}</label><input id="n_${p.id}" value="${p.name}"><label>Fonction</label><select id="r_${p.id}"><option ${p.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${p.role==="Employé"?"selected":""}>Employé</option></select></div>`).join("");document.getElementById("cycleStart").value=state.cycleStart||"";document.getElementById("modal").classList.add("open")}
+function closeSettings(){document.getElementById("modal").classList.remove("open")}
+function saveSettings(){state.people.forEach(p=>{p.name=document.getElementById("n_"+p.id).value.trim()||p.name;p.role=document.getElementById("r_"+p.id).value});state.cycleStart=document.getElementById("cycleStart").value;save();closeSettings();render()}
+function resetApp(){if(confirm("Tout réinitialiser ?")){localStorage.removeItem("rotationEquipePWA");location.reload()}}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"))}
+render();
+</script>
+</body>
+</html>
