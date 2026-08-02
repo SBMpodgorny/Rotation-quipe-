@@ -32,7 +32,7 @@ button,input,select{font:inherit}button{border:0;border-radius:14px;padding:13px
 <div class="app">
 <header><div><h1>Rotation équipe</h1><div class="small" id="date"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
 <div class="cycle"><div class="small">Journée de travail actuelle</div><div id="workDateLabel" style="font-size:16px;font-weight:800;margin-top:4px"></div><div id="cycleLabel" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
-<div id="nightNotice" class="notice" style="display:none">Après minuit et avant 6 h, l’application reste sur la journée de travail précédente.</div>
+<div id="nightNotice" class="notice" style="display:none">Après minuit et avant 6 h, l’application reste sur la journée de travail précédente. Une personne absente conserve son tour et redevient prioritaire à son retour.</div>
 
 <div class="card"><div class="section"><h2>Journées passées</h2><button class="blue" onclick="openPastDays()">📅 Modifier</button></div><div class="small">Consulte et corrige les départs ou retours enregistrés pour une date antérieure.</div></div>
 <div class="card"><div class="section"><h2>Service</h2><span class="badge" id="serviceBadge"></span></div><div class="grid" id="services"></div></div>
