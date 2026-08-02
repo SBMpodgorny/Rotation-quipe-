@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
@@ -11,77 +11,87 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Rotation Équipe</title>
 <style>
-:root{--bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--ok:#16a34a;--warn:#d97706;--danger:#dc2626}
+:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--danger:#dc2626;--blue:#2563eb}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 28px)}
-.app{max-width:760px;margin:auto}.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #00000010}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}button,input,select{font:inherit}button{border:0;border-radius:14px;padding:14px;font-weight:700}.service{background:#f9fafb;border:1px solid var(--line);text-align:left}.service.active{background:#111827;color:#fff}
-.primary{background:#111827;color:#fff}.success{background:var(--ok);color:#fff}.secondary{background:#e5e7eb}.warning{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.danger{background:#fee2e2;color:#991b1b}
-.next{text-align:center;padding:20px;border-radius:16px;background:#f9fafb;border:1px solid var(--line)}.next-name{font-size:30px;font-weight:900;margin:8px 0}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e5e7eb;font-size:12px;font-weight:700}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.section{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.section h2{margin:0;font-size:18px}
-ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--line)}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.meta{font-size:12px;color:var(--muted)}
-.status{padding:5px 8px;border-radius:999px;font-size:12px;background:#dcfce7;color:#166534}.status.absent{background:#fee2e2;color:#991b1b}
-.history{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:88vh;overflow:auto}
-label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
+.app{max-width:760px;margin:auto}header,.section,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}header{align-items:flex-start;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
+.card,.cycle{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #00000010}.cycle{background:#eff6ff;border:1px solid #bfdbfe}
+.section{margin-bottom:12px}.section h2{margin:0;font-size:18px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+button,input,select{font:inherit}button{border:0;border-radius:14px;padding:13px 14px;font-weight:750}.service{background:#f8fafc;border:1px solid var(--line);text-align:left}.service.active{background:#0f172a;color:#fff}
+.primary{background:#0f172a;color:#fff}.success{background:var(--ok);color:#fff}.secondary{background:#e2e8f0}.warning{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.danger{background:#fee2e2;color:#991b1b}.blue{background:#dbeafe;color:#1d4ed8}
+.next{text-align:center;padding:20px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}.next-name{font-size:31px;font-weight:900;margin:8px 0}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e2e8f0;font-size:12px;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}ol{padding-left:24px;margin:0}li{padding:11px 0;border-bottom:1px solid var(--line)}
+.status{padding:5px 8px;border-radius:999px;font-size:12px;background:#dcfce7;color:#166534}.status.absent{background:#fee2e2;color:#991b1b}.history{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:50}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:92vh;overflow:auto}
+.member,.past-item{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
+.rank{display:flex;gap:8px;margin-top:10px}.rank button{flex:1}.past-actions{display:flex;gap:8px;margin-top:10px}.past-actions button{flex:1}.date-tools{display:grid;grid-template-columns:1fr auto;gap:10px}
+.notice{padding:12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;margin-bottom:12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation équipe</h1><div class="small" id="date"></div></div><button class="secondary" onclick="openSettings()">⚙️</button></header>
-<div class="card"><div class="section"><h2>Service</h2><span class="badge" id="cycle">Cycle manuel</span></div><div class="grid" id="services"></div></div>
+<header><div><h1>Rotation équipe</h1><div class="small" id="date"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
+<div class="cycle"><div class="small">Journée de travail actuelle</div><div id="workDateLabel" style="font-size:16px;font-weight:800;margin-top:4px"></div><div id="cycleLabel" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
+<div id="nightNotice" class="notice" style="display:none">Après minuit et avant 6 h, l’application reste sur la journée de travail précédente.</div>
+
+<div class="card"><div class="section"><h2>Journées passées</h2><button class="blue" onclick="openPastDays()">📅 Modifier</button></div><div class="small">Consulte et corrige les départs ou retours enregistrés pour une date antérieure.</div></div>
+<div class="card"><div class="section"><h2>Service</h2><span class="badge" id="serviceBadge"></span></div><div class="grid" id="services"></div></div>
 <div class="card"><div class="next"><div class="small" id="actionLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><div class="actions"><button class="success" onclick="validateTurn()">✅ Valider</button><button class="warning" onclick="skipTurn()">⏭️ Passer</button></div></div>
 <div class="card"><div class="section"><h2>Ordre actuel</h2><button class="secondary" onclick="undo()">↩️ Annuler</button></div><ol id="order"></ol></div>
 <div class="card"><div class="section"><h2>Présences</h2><button class="secondary" onclick="allPresent()">Tous présents</button></div><div id="presence"></div></div>
 <div class="card"><div class="section"><h2>Historique</h2><button class="danger" onclick="clearHistory()">Effacer</button></div><div id="history"></div></div>
 </div>
 
-<div class="modal" id="modal"><div class="sheet">
-<div class="section"><h2>Configuration</h2><button class="secondary" onclick="closeSettings()">Fermer</button></div>
-<p class="small">Saisis les six personnes dans l’ordre initial d’ancienneté. Le chef reste hors rotation.</p>
-<div id="editors"></div>
+<div class="modal" id="settingsModal"><div class="sheet">
+<div class="section"><h2>Équipe et ancienneté</h2><button class="secondary" onclick="closeSettings()">Fermer</button></div>
+<p class="small">L’ordre ci-dessous est l’ordre d’ancienneté.</p><div id="editors"></div>
 <label>Date correspondant au Jour 1 — Fermeture</label><input type="date" id="cycleStart">
+<label>Heure de changement de journée de travail</label>
+<select id="dayCutoff"><option value="6">06 h 00</option></select>
 <div class="actions"><button class="primary" onclick="saveSettings()">Enregistrer</button><button class="danger" onclick="resetApp()">Réinitialiser</button></div>
 </div></div>
 
+<div class="modal" id="pastModal"><div class="sheet">
+<div class="section"><h2>Modifier une journée passée</h2><button class="secondary" onclick="closePastDays()">Fermer</button></div>
+<div class="date-tools"><input type="date" id="pastDate"><button class="blue" onclick="loadPastDate()">Afficher</button></div>
+<div class="cycle" style="margin-top:12px"><div class="small">Service correspondant</div><div id="pastServiceLabel" style="font-weight:900;margin-top:4px">—</div></div>
+<div id="pastEvents"></div>
+<button class="primary" style="width:100%" onclick="addPastEvent()">＋ Ajouter un départ / retour</button>
+</div></div>
+
 <script>
-const SERVICES=[
-{id:"fermeture",name:"Fermeture",hours:"22h → 6h",action:"Prochain départ"},
-{id:"deuxieme",name:"Deuxième nuit",hours:"19h → 5h",action:"Prochain départ"},
-{id:"coupure",name:"Coupure",hours:"16h–19h / 22h–3h",action:"Prochain retour"},
-{id:"apresmidi",name:"Après-midi",hours:"14h → 19h",action:"Prochain départ"}];
-const defaults=[
-{id:"p1",name:"Sous-chef 1",role:"Sous-chef",present:true},{id:"p2",name:"Sous-chef 2",role:"Sous-chef",present:true},
-{id:"p3",name:"Employé 1",role:"Employé",present:true},{id:"p4",name:"Employé 2",role:"Employé",present:true},
-{id:"p5",name:"Employé 3",role:"Employé",present:true},{id:"p6",name:"Employé 4",role:"Employé",present:true}];
-let state=JSON.parse(localStorage.getItem("rotationEquipePWA"))||{people:defaults,rotations:{fermeture:["p1","p2","p3","p4","p5","p6"],deuxieme:["p1","p2","p3","p4","p5","p6"],coupure:["p1","p2","p3","p4","p5","p6"],apresmidi:["p1","p2","p3","p4","p5","p6"]},selected:"fermeture",history:[],undo:[],cycleStart:""};
-const save=()=>localStorage.setItem("rotationEquipePWA",JSON.stringify(state));
-const getP=id=>state.people.find(p=>p.id===id); const svc=()=>SERVICES.find(s=>s.id===state.selected);
-function eligible(){return state.rotations[state.selected].filter(id=>getP(id)?.present)}
-function render(){
-document.getElementById("date").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-const sroot=document.getElementById("services");sroot.innerHTML="";
-SERVICES.forEach(s=>{let b=document.createElement("button");b.className="service"+(s.id===state.selected?" active":"");b.innerHTML="<b>"+s.name+"</b><div class='small'>"+s.hours+"</div>";b.onclick=()=>{state.selected=s.id;save();render()};sroot.appendChild(b)});
-const e=eligible();document.getElementById("actionLabel").textContent=svc().action;
-document.getElementById("nextName").textContent=e.length?getP(e[0]).name:"Aucune personne présente";document.getElementById("nextRole").textContent=e.length?getP(e[0]).role:"—";
-const order=document.getElementById("order");order.innerHTML="";state.rotations[state.selected].forEach(id=>{let p=getP(id),li=document.createElement("li");li.innerHTML=`<div class="row"><div><b>${p.name}</b><div class="meta">${p.role}</div></div><span class="status ${p.present?"":"absent"}">${p.present?"Présent":"Absent"}</span></div>`;order.appendChild(li)});
-document.getElementById("presence").innerHTML=state.people.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><div><b>${p.name}</b><div class="meta">${p.role}</div></div><button class="${p.present?"secondary":"danger"}" onclick="toggle('${p.id}')">${p.present?"Présent":"Absent"}</button></div>`).join("");
-document.getElementById("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="history"><b>${getP(h.personId)?.name||"Personne"}</b> — ${SERVICES.find(x=>x.id===h.serviceId)?.name}<br><span class="small">${h.type} · ${new Date(h.date).toLocaleString("fr-FR")}</span></div>`).join(""):"<div class='small'>Aucun événement.</div>";
-renderCycle();
-}
-function snapshot(){state.undo.push(JSON.stringify({...state,undo:[]})); if(state.undo.length>20)state.undo.shift()}
-function validateTurn(){let e=eligible();if(!e.length)return alert("Aucune personne présente.");snapshot();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({personId:id,serviceId:state.selected,type:state.selected==="coupure"?"Retour validé":"Départ validé",date:new Date().toISOString()});save();render()}
-function skipTurn(){let e=eligible();if(!e.length)return;snapshot();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({personId:id,serviceId:state.selected,type:"Passé exceptionnellement",date:new Date().toISOString()});save();render()}
-function toggle(id){getP(id).present=!getP(id).present;save();render()} function allPresent(){state.people.forEach(p=>p.present=true);save();render()}
-function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let old=state.undo.pop(),keep=state.undo;state=JSON.parse(old);state.undo=keep;save();render()}
-function clearHistory(){if(confirm("Effacer l’historique ?")){state.history=[];save();render()}}
-function renderCycle(){let b=document.getElementById("cycle");if(!state.cycleStart){b.textContent="Cycle manuel";return}let start=new Date(state.cycleStart+"T00:00:00"),today=new Date();today.setHours(0,0,0,0);let i=((Math.floor((today-start)/86400000)%6)+6)%6;let labels=["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"];b.textContent=labels[i]}
-function openSettings(){document.getElementById("editors").innerHTML=state.people.map((p,i)=>`<div class="card" style="box-shadow:none;border:1px solid var(--line)"><label>Nom ${i+1}</label><input id="n_${p.id}" value="${p.name}"><label>Fonction</label><select id="r_${p.id}"><option ${p.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${p.role==="Employé"?"selected":""}>Employé</option></select></div>`).join("");document.getElementById("cycleStart").value=state.cycleStart||"";document.getElementById("modal").classList.add("open")}
-function closeSettings(){document.getElementById("modal").classList.remove("open")}
-function saveSettings(){state.people.forEach(p=>{p.name=document.getElementById("n_"+p.id).value.trim()||p.name;p.role=document.getElementById("r_"+p.id).value});state.cycleStart=document.getElementById("cycleStart").value;save();closeSettings();render()}
-function resetApp(){if(confirm("Tout réinitialiser ?")){localStorage.removeItem("rotationEquipePWA");location.reload()}}
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"))}
-render();
-</script>
-</body>
-</html>
+const SERVICES=[{id:"fermeture",name:"Fermeture",hours:"22h → 6h",action:"Prochain départ"},{id:"deuxieme",name:"Deuxième nuit",hours:"19h → 5h",action:"Prochain départ"},{id:"coupure",name:"Coupure",hours:"16h–19h / 22h–3h",action:"Prochain retour"},{id:"apresmidi",name:"Après-midi",hours:"14h → 19h",action:"Prochain départ"}];
+const defaults=[{id:"p1",name:"Rigoli Jean-Luc",role:"Chef",present:true,inRotation:false},{id:"p2",name:"Connen Renaud",role:"Sous-chef",present:true,inRotation:true},{id:"p3",name:"Podgorny Boris",role:"Sous-chef",present:true,inRotation:true},{id:"p4",name:"Maccario Sebastien",role:"Employé",present:true,inRotation:true},{id:"p5",name:"Banti Hervé",role:"Employé",present:true,inRotation:true},{id:"p6",name:"Bernardi Jeremy",role:"Employé",present:true,inRotation:true},{id:"p7",name:"Gaza Sébastien",role:"Employé",present:true,inRotation:true}];
+let state=JSON.parse(localStorage.getItem("rotationEquipeV4"))||{people:defaults,rotations:{fermeture:["p2","p3","p4","p5","p6","p7"],deuxieme:["p2","p3","p4","p5","p6","p7"],coupure:["p2","p3","p4","p5","p6","p7"],apresmidi:["p2","p3","p4","p5","p6","p7"]},selected:"deuxieme",history:[],undo:[],cycleStart:"2026-08-01",dayCutoff:6};
+const save=()=>localStorage.setItem("rotationEquipeV4",JSON.stringify(state)),getP=id=>state.people.find(p=>p.id===id),svc=()=>SERVICES.find(s=>s.id===state.selected);
+function ids(){return state.people.filter(p=>p.inRotation).map(p=>p.id)}function normalize(){const a=ids();SERVICES.forEach(s=>{let r=(state.rotations[s.id]||[]).filter(x=>a.includes(x));a.forEach(x=>{if(!r.includes(x))r.push(x)});state.rotations[s.id]=r})}
+function isoLocal(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function operationalDate(now=new Date()){let d=new Date(now);if(d.getHours()<(state.dayCutoff||6))d.setDate(d.getDate()-1);d.setHours(12,0,0,0);return d}
+function cycleFor(dateStr){let s=new Date((state.cycleStart||"2026-08-01")+"T12:00:00"),t=new Date(dateStr+"T12:00:00");let i=((Math.floor((t-s)/86400000)%6)+6)%6;return{i,label:["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"][i],service:i<4?SERVICES[i]:null}}
+function eligible(){return state.rotations[state.selected].filter(id=>getP(id)?.present&&getP(id)?.inRotation)}
+function render(){normalize();let now=new Date(),op=operationalDate(now),opISO=isoLocal(op),c=cycleFor(opISO);document.getElementById("date").textContent=now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});document.getElementById("workDateLabel").textContent=op.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});document.getElementById("cycleLabel").textContent=c.label;document.getElementById("serviceBadge").textContent=c.i<4?"Service automatique":"Jour de repos";document.getElementById("nightNotice").style.display=now.getHours()<(state.dayCutoff||6)?"block":"none";if(c.service)state.selected=c.service.id;
+let sr=document.getElementById("services");sr.innerHTML="";SERVICES.forEach(s=>{let b=document.createElement("button");b.className="service"+(s.id===state.selected?" active":"");b.innerHTML="<b>"+s.name+"</b><div class='small'>"+s.hours+"</div>";b.onclick=()=>{state.selected=s.id;save();render()};sr.appendChild(b)});
+let e=eligible();document.getElementById("actionLabel").textContent=svc().action;document.getElementById("nextName").textContent=e.length?getP(e[0]).name:"Aucune personne présente";document.getElementById("nextRole").textContent=e.length?getP(e[0]).role:"—";
+let o=document.getElementById("order");o.innerHTML="";state.rotations[state.selected].forEach(id=>{let p=getP(id),li=document.createElement("li");li.innerHTML=`<div class="row"><div><b>${p.name}</b><div class="small">${p.role}</div></div><span class="status ${p.present?"":"absent"}">${p.present?"Présent":"Absent"}</span></div>`;o.appendChild(li)});
+document.getElementById("presence").innerHTML=state.people.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><div><b>${p.name}</b><div class="small">${p.role}${p.inRotation?"":" · Hors rotation"}</div></div><button class="${p.present?"secondary":"danger"}" onclick="toggle('${p.id}')">${p.present?"Présent":"Absent"}</button></div>`).join("");
+document.getElementById("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="history"><b>${getP(h.personId)?.name||"Personne"}</b> — ${SERVICES.find(x=>x.id===h.serviceId)?.name||"Service"}<br><span class="small">${h.type} · ${new Date(h.date).toLocaleString("fr-FR")}</span></div>`).join(""):"<div class='small'>Aucun événement.</div>";save()}
+function snap(){state.undo.push(JSON.stringify({...state,undo:[]}));if(state.undo.length>20)state.undo.shift()}function rotate(type){let e=eligible();if(!e.length)return alert("Aucune personne présente.");snap();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({id:crypto.randomUUID(),personId:id,serviceId:state.selected,type,date:new Date().toISOString()});save();render()}
+function validateTurn(){rotate(state.selected==="coupure"?"Retour validé":"Départ validé")}function skipTurn(){rotate("Passé exceptionnellement")}function toggle(id){getP(id).present=!getP(id).present;save();render()}function allPresent(){state.people.forEach(p=>p.present=true);save();render()}
+function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let x=state.undo.pop(),u=state.undo;state=JSON.parse(x);state.undo=u;save();render()}function clearHistory(){if(confirm("Effacer l’historique ?")){state.history=[];save();render()}}
+
+function openSettings(){renderEditors();document.getElementById("cycleStart").value=state.cycleStart;document.getElementById("dayCutoff").value=String(state.dayCutoff||6);document.getElementById("settingsModal").classList.add("open")}function closeSettings(){document.getElementById("settingsModal").classList.remove("open")}
+function renderEditors(){document.getElementById("editors").innerHTML=state.people.map((p,i)=>`<div class="member"><div class="row"><strong>${i+1}. ${p.name}</strong><span class="badge">${p.inRotation?"Dans la rotation":"Hors rotation"}</span></div><label>Nom</label><input id="n_${p.id}" value="${p.name}"><label>Fonction</label><select id="r_${p.id}"><option ${p.role==="Chef"?"selected":""}>Chef</option><option ${p.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${p.role==="Employé"?"selected":""}>Employé</option></select><label>Participation</label><select id="i_${p.id}"><option value="true" ${p.inRotation?"selected":""}>Dans la rotation</option><option value="false" ${!p.inRotation?"selected":""}>Hors rotation</option></select><div class="rank"><button class="primary" onclick="movePerson(${i},-1)">⬆️ Plus ancien</button><button class="secondary" onclick="movePerson(${i},1)">⬇️ Moins ancien</button></div></div>`).join("")}
+function capture(){state.people.forEach(p=>{let n=document.getElementById("n_"+p.id),r=document.getElementById("r_"+p.id),i=document.getElementById("i_"+p.id);if(n)p.name=n.value.trim()||p.name;if(r)p.role=r.value;if(i)p.inRotation=i.value==="true"})}
+function movePerson(i,d){capture();let j=i+d;if(j<0||j>=state.people.length)return;[state.people[i],state.people[j]]=[state.people[j],state.people[i]];renderEditors()}
+function saveSettings(){capture();state.cycleStart=document.getElementById("cycleStart").value||"2026-08-01";state.dayCutoff=parseInt(document.getElementById("dayCutoff").value||"6",10);normalize();save();closeSettings();render()}function resetApp(){if(confirm("Réinitialiser toute l’application ?")){localStorage.removeItem("rotationEquipeV4");location.reload()}}
+
+function openPastDays(){let d=operationalDate();d.setDate(d.getDate()-1);document.getElementById("pastDate").value=isoLocal(d);document.getElementById("pastModal").classList.add("open");loadPastDate()}
+function closePastDays(){document.getElementById("pastModal").classList.remove("open")}function eventWorkDate(iso){return isoLocal(operationalDate(new Date(iso)))}
+function loadPastDate(){let d=document.getElementById("pastDate").value;if(!d)return;let c=cycleFor(d);document.getElementById("pastServiceLabel").textContent=c.label+(c.service?" · "+c.service.name:"");let ev=state.history.filter(h=>eventWorkDate(h.date)===d);document.getElementById("pastEvents").innerHTML=ev.length?ev.map(h=>`<div class="past-item"><label>Personne</label><select id="pp_${h.id}">${state.people.filter(p=>p.inRotation).map(p=>`<option value="${p.id}" ${p.id===h.personId?"selected":""}>${p.name}</option>`).join("")}</select><label>Type</label><select id="pt_${h.id}"><option ${h.type==="Départ validé"?"selected":""}>Départ validé</option><option ${h.type==="Retour validé"?"selected":""}>Retour validé</option><option ${h.type==="Passé exceptionnellement"?"selected":""}>Passé exceptionnellement</option></select><label>Heure réelle</label><input type="time" id="ph_${h.id}" value="${new Date(h.date).toTimeString().slice(0,5)}"><div class="past-actions"><button class="success" onclick="savePastEvent('${h.id}')">Enregistrer</button><button class="danger" onclick="deletePastEvent('${h.id}')">Supprimer</button></div></div>`).join(""):"<div class='small' style='margin:12px 0'>Aucun événement enregistré pour cette journée de travail.</div>"}
+function realDateForWorkday(workDate,time){let [hh,mm]=time.split(":").map(Number),d=new Date(workDate+"T12:00:00");if(hh<(state.dayCutoff||6))d.setDate(d.getDate()+1);return isoLocal(d)+"T"+time+":00"}
+function addPastEvent(){let d=document.getElementById("pastDate").value;if(!d)return alert("Choisis une date.");let c=cycleFor(d),serviceId=c.service?c.service.id:"fermeture",first=state.people.find(p=>p.inRotation),time=serviceId==="fermeture"?"05:30":serviceId==="deuxieme"?"04:30":serviceId==="coupure"?"22:00":"18:30";state.history.push({id:crypto.randomUUID(),personId:first.id,serviceId,type:serviceId==="coupure"?"Retour validé":"Départ validé",date:realDateForWorkday(d,time)});save();loadPastDate();render()}
+function savePastEvent(id){let h=state.history.find(x=>x.id===id),d=document.getElementById("pastDate").value;if(!h)return;h.personId=document.getElementById("pp_"+id).value;h.type=document.getElementById("pt_"+id).value;let time=document.getElementById("ph_"+id).value||"12:00",c=cycleFor(d);if(c.service)h.serviceId=c.service.id;h.date=realDateForWorkday(d,time);save();loadPastDate();render()}
+function deletePastEvent(id){if(!confirm("Supprimer cet événement ?"))return;state.history=state.history.filter(x=>x.id!==id);save();loadPastDate();render()}
+
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));render();
+</script></body></html>
