@@ -31,7 +31,7 @@ ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--li
 <header><div><h1>Rotation équipe</h1><div class="small" id="civil"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
 <div class="cycle"><div class="small">Journée de travail</div><div id="workDate" style="font-weight:800;margin-top:4px"></div><div id="cycle" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
 <div id="nightNotice" class="notice" style="display:none">Avant 6 h, l’application reste sur la journée de travail précédente.</div>
-<div class="card"><div class="section"><h2>Calendrier</h2><button class="blue" onclick="openCalendar()">📅 Ouvrir</button></div><div class="small">Chaque journée modifie uniquement sa rotation métier.</div></div>
+<div class="card"><div class="section"><h2>Calendrier</h2><button class="blue" onclick="openCalendar()">📅 Ouvrir</button></div><div class="small">Première nuit et Deuxième nuit partagent une seule rotation de départ continue. La Coupure et l’Après-midi restent indépendantes.</div></div>
 <div class="card"><div class="section"><h2>Rotation du jour</h2><span class="badge" id="rotationLabel"></span></div><div class="grid" id="services"></div></div>
 <div class="card"><div class="next"><div class="small" id="nextLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><button class="success" style="width:100%;margin-top:10px" onclick="validateCurrent()">✅ Valider cette personne</button></div>
 <div class="card"><div class="section"><h2>Ordre actuel</h2><button class="secondary" onclick="undo()">↩️ Annuler</button></div><ol id="order"></ol></div>
@@ -55,8 +55,8 @@ ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--li
 
 <script>
 const ROTATIONS=[
-{id:"j1_reste",cycle:0,name:"Première nuit",title:"Personnes restées",verb:"Resté jusqu’à la fin"},
-{id:"j2_reste",cycle:1,name:"Deuxième nuit",title:"Personnes restées",verb:"Resté jusqu’à la fin"},
+{id:"nuits_depart",cycle:0,name:"Première nuit",title:"Ordre de départ commun",verb:"Départ effectué"},
+{id:"nuits_depart",cycle:1,name:"Deuxième nuit",title:"Ordre de départ commun",verb:"Départ effectué"},
 {id:"j3_retour",cycle:2,name:"Coupure",title:"Ordre de retour",verb:"Retour effectué"},
 {id:"j4_5eme",cycle:3,name:"Après-midi",title:"Départ 5ème",verb:"Départ 5ème effectué"}
 ];
@@ -69,7 +69,7 @@ const DEFAULT=[
 {id:"p6",name:"Bernardi Jeremy",role:"Employé",inRotation:true},
 {id:"p7",name:"Gaza Sébastien",role:"Employé",inRotation:true}
 ];
-let state=JSON.parse(localStorage.getItem("rotationEquipeV9"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,selected:"j2_reste",events:[],undo:[]};
+let state=JSON.parse(localStorage.getItem("rotationEquipeV9"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,selected:"nuits_depart",events:[],undo:[]};
 let calMonth=new Date();calMonth.setDate(1);let selectedDate=null;
 const save=()=>localStorage.setItem("rotationEquipeV9",JSON.stringify(state));
 const p=id=>state.people.find(x=>x.id===id),active=()=>state.people.filter(x=>x.inRotation);
@@ -90,10 +90,14 @@ function render(){
  document.getElementById("nightNotice").style.display=now.getHours()<(state.cutoff||6)?"block":"none";
  if(ctx.c.rotation)state.selected=ctx.c.rotation.id;
  const root=document.getElementById("services");root.innerHTML="";
- ROTATIONS.forEach(r=>{let b=document.createElement("button");b.className="service"+(r.id===state.selected?" active":"");b.innerHTML="<b>"+r.name+"</b><div class='small'>"+r.title+"</div>";b.onclick=()=>{state.selected=r.id;save();render()};root.appendChild(b)});
+ [
+{id:"nuits_depart",name:"Première + Deuxième nuit",title:"Ordre de départ commun"},
+{id:"j3_retour",name:"Coupure",title:"Ordre de retour"},
+{id:"j4_5eme",name:"Après-midi",title:"Départ 5ème"}
+].forEach(r=>{let b=document.createElement("button");b.className="service"+(r.id===state.selected?" active":"");b.innerHTML="<b>"+r.name+"</b><div class='small'>"+r.title+"</div>";b.onclick=()=>{state.selected=r.id;save();render()};root.appendChild(b)});
  const r=ROTATIONS.find(x=>x.id===state.selected),o=orderAfter(r.id,ctx.wd);
  document.getElementById("rotationLabel").textContent=r.title;
- document.getElementById("nextLabel").textContent=r.id.startsWith("j1")||r.id.startsWith("j2")?"Prochaine personne à faire rester":r.title;
+ document.getElementById("nextLabel").textContent=r.title;
  document.getElementById("nextName").textContent=o.length?p(o[0]).name:"—";document.getElementById("nextRole").textContent=o.length?p(o[0]).role:"—";
  document.getElementById("order").innerHTML=o.map(id=>`<li><b>${p(id).name}</b><div class="small">${p(id).role}</div></li>`).join("");
  document.getElementById("history").innerHTML=orderedEvents().slice(-12).reverse().map(e=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${p(e.personId)?.name}</b> — ${ROTATIONS.find(r=>r.id===e.rotationId)?.verb}<br><span class="small">${e.workDate} · ${e.time}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>";
