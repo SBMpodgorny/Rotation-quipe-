@@ -1,0 +1,19 @@
+{
+  "name": "Rotation Équipe 2.1",
+  "short_name": "Rotation",
+  "description": "Gestion simple des rotations de l'équipe : nuits, coupure, retours et 5ème.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3fa",
+  "theme_color": "#eef3fa",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

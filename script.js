@@ -1,50 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Rotation Équipe">
-<meta name="theme-color" content="#eef3fa">
-<title>Rotation Équipe 2.1</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="app">
-<header><div><h1>Rotation Équipe 2.1</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
-
-<section id="todayView" class="view active">
- <div class="card day-card"><div class="eyebrow">Journée de travail</div><div class="day-title" id="workDate"></div><div class="day-type" id="workType"></div></div>
- <div class="card"><div class="section-head"><h2>Service du jour</h2><button class="undo" id="undoToday" onclick="undoLast()">↩︎ Annuler</button></div><div id="serviceActions"></div></div>
-</section>
-
-<section id="rotationsView" class="view">
- <div class="card"><div class="section-head"><h2>État des rotations</h2><button class="undo" id="undoRot" onclick="undoLast()">↩︎ Annuler</button></div><div class="rotations-grid" id="rotationQueues"></div></div>
-</section>
-
-<section id="journalView" class="view">
- <div class="card"><div class="section-head"><h2>Journal des décisions</h2><button class="undo" id="undoJournal" onclick="undoLast()">↩︎ Annuler</button></div><div id="journal"></div></div>
-</section>
-
-<section id="teamView" class="view">
- <div class="card"><div class="section-head"><h2>Équipe</h2></div><div id="team"></div><p class="hint">Les trois roulements sont indépendants : « Resté » agit sur le roulement commun nuits/coupure, « Retour » seulement sur les retours de coupure et « Parti » de l’après-midi seulement sur le 5ème.</p><button class="danger-link" onclick="resetToCorrectState()">Réinitialiser avec la situation correcte du 3 août 2026</button></div>
-</section>
-</div>
-
-<nav class="tabs">
- <button class="tab active" onclick="showView('today',this)"><span>🏠</span>Aujourd’hui</button>
- <button class="tab" onclick="showView('rotations',this)"><span>🔄</span>Rotations</button>
- <button class="tab" onclick="showView('journal',this)"><span>📖</span>Journal</button>
- <button class="tab" onclick="showView('team',this)"><span>👥</span>Équipe</button>
-</nav>
-
-<div class="modal" id="timeModal"><div class="sheet"><h3 id="modalTitle"></h3><p id="modalText"></p><label for="eventDate">Date</label><input type="date" id="eventDate"><label for="eventTime">Heure saisie manuellement</label><input type="time" id="eventTime" step="60"><div class="modal-actions"><button class="cancel" onclick="closeModal()">Annuler</button><button class="save" onclick="confirmAction()">Enregistrer</button></div></div></div>
-
-<script>
 const PEOPLE=[
  {id:'bernardi',name:'Bernardi Jeremy'},
  {id:'banti',name:'Banti Hervé'},
@@ -113,12 +66,3 @@ function undoLast(){if(!state.undo.length){alert('Aucune action à annuler.');re
 function showView(name,btn){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(name+'View').classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}
 function resetToCorrectState(){if(!confirm('Réinitialiser toutes les données et revenir à la situation correcte du 3 août 2026 ?'))return;state=initialState();save();render();showView('today',document.querySelector('.tab'))}
 document.getElementById('timeModal').addEventListener('click',e=>{if(e.target.id==='timeModal')closeModal()});render();
-</script>
-<script src="script.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
-}
-</script>
-</body>
-</html>
