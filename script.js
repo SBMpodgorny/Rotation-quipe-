@@ -28,6 +28,8 @@ let state=load();
 let pending=null;
 let editingQueueKey=null;
 let editingQueue=[];
+let selectedCalendarDate=new Date();
+let calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
 
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));return s&&s.stayQueue?s:initialState()}catch{return initialState()}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
@@ -60,6 +62,7 @@ function render(){
  renderQueues();
  renderJournal();
  renderTeam();
+ renderCalendar();
  document.querySelectorAll('.undo').forEach(b=>b.disabled=!state.undo.length);
 }
 function renderActions(service){
@@ -79,7 +82,7 @@ function renderActions(service){
 }
 function queueHTML(key,title,note,arr){
  return `<button type="button" class="rotation-block rotation-clickable" onclick="openRotationEditor('${key}')" aria-label="Modifier le roulement ${title}">
-   <div class="rotation-top"><div><div class="rotation-title">${title}</div><div class="rotation-note">${note}</div></div><span class="edit-badge">Modifier</span></div>
+   <div class="rotation-top"><div><div class="rotation-title">${title}</div><div class="rotation-note">${note}</div></div><span class="edit-badge">✏️ Modifier</span></div>
    <ol class="queue">${arr.map((id,i)=>`<li>${p(id).name}${i===0?'<span class="next-badge">PROCHAIN</span>':''}</li>`).join('')}</ol>
  </button>`;
 }
@@ -88,7 +91,7 @@ function todayRotationCard(key,title,note,arr){
  return `<button type="button" class="today-rotation-card" onclick="openRotationEditor('${key}')" aria-label="Modifier le roulement ${title}">
    <div class="today-card-top">
      <div class="today-card-title">${title}</div>
-     <span class="today-edit-icon">Modifier</span>
+     <span class="today-edit-icon">✏️ Modifier</span>
    </div>
    <div class="today-card-note">${note}</div>
    <div class="today-card-name">${nextPerson ? nextPerson.name : 'Non défini'}</div>
@@ -193,11 +196,124 @@ function undoLast(){
  state={...state,...previous,undo:remaining};
  save();render();
 }
+
+function formatISODate(date){
+ const d=new Date(date);
+ const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);
+ return z.toISOString().slice(0,10);
+}
+function sameDate(a,b){return formatISODate(a)===formatISODate(b)}
+function monthTitle(date){
+ return date.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+}
+function serviceForDate(date){
+ return dayInfo(date);
+}
+function eventsForDate(date){
+ const iso=formatISODate(date);
+ return state.history.filter(h=>h.date===iso);
+}
+function renderCalendar(){
+ const grid=document.getElementById('calendarGrid');
+ if(!grid)return;
+ document.getElementById('calendarMonthTitle').textContent=
+  monthTitle(calendarMonthDate).replace(/^./,c=>c.toUpperCase());
+
+ const year=calendarMonthDate.getFullYear();
+ const month=calendarMonthDate.getMonth();
+ const first=new Date(year,month,1);
+ const last=new Date(year,month+1,0);
+ const firstIndex=(first.getDay()+6)%7;
+ const total=firstIndex+last.getDate();
+ const cells=Math.ceil(total/7)*7;
+
+ let html='';
+ for(let i=0;i<cells;i++){
+  const dayNum=i-firstIndex+1;
+  if(dayNum<1||dayNum>last.getDate()){
+   html+='<div class="calendar-day empty-day"></div>';
+   continue;
+  }
+  const date=new Date(year,month,dayNum);
+  const info=serviceForDate(date);
+  const events=eventsForDate(date);
+  const isToday=sameDate(date,new Date());
+  const isSelected=sameDate(date,selectedCalendarDate);
+  const classes=['calendar-day'];
+  if(isToday)classes.push('is-today');
+  if(isSelected)classes.push('is-selected');
+  if(events.length)classes.push('has-events');
+  html+=`<button type="button" class="${classes.join(' ')}" onclick="selectCalendarDate('${formatISODate(date)}')">
+    <span class="calendar-number">${dayNum}</span>
+    <span class="calendar-service">${info.title.replace(/^Jour \d+ · /,'')}</span>
+    ${events.length?`<span class="event-count">${events.length}</span>`:''}
+  </button>`;
+ }
+ grid.innerHTML=html;
+ renderSelectedDay();
+}
+function renderSelectedDay(){
+ const date=new Date(selectedCalendarDate);
+ const info=serviceForDate(date);
+ const events=eventsForDate(date);
+ document.getElementById('selectedDateTitle').textContent=
+  date.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('selectedDateService').textContent=info.title;
+
+ const details=document.getElementById('selectedDayDetails');
+ if(events.length){
+  details.innerHTML=`<div class="calendar-detail-title">Événements enregistrés</div>`+
+   events.map(h=>`<div class="calendar-event">
+     <div><strong>${p(h.personId)?.name||'Personne inconnue'}</strong></div>
+     <div>${actionName(h.action)} · ${h.time}</div>
+   </div>`).join('');
+  return;
+ }
+
+ if(formatISODate(date)<formatISODate(new Date())){
+  details.innerHTML='<div class="empty">Aucun événement enregistré pour cette date.</div>';
+  return;
+ }
+
+ let forecast='';
+ if(info.key==='nuit1'||info.key==='nuit2'){
+  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain à rester selon le roulement actuel</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
+ }else if(info.key==='coupure'){
+  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain retour prioritaire</div><div class="forecast-name">${p(state.returnQueue[0]).name}</div></div>
+  <div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
+ }else if(info.key==='apres'){
+  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain 5ème</div><div class="forecast-name">${p(state.fifthQueue[0]).name}</div></div>`;
+ }else{
+  forecast='<div class="empty">Jour de repos prévu.</div>';
+ }
+ details.innerHTML=`<div class="calendar-detail-title">Prévision</div>${forecast}<div class="forecast-note">Cette prévision utilise les roulements actuels et ne modifie aucune donnée.</div>`;
+}
+function selectCalendarDate(iso){
+ selectedCalendarDate=new Date(iso+'T12:00:00');
+ calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
+ renderCalendar();
+}
+function changeCalendarMonth(delta){
+ calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+delta,1);
+ renderCalendar();
+}
+function changeSelectedDay(delta){
+ selectedCalendarDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),selectedCalendarDate.getDate()+delta);
+ calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
+ renderCalendar();
+}
+function selectToday(){
+ selectedCalendarDate=new Date();
+ calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
+ renderCalendar();
+}
+
 function showView(name,btn){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
  document.getElementById(name+'View').classList.add('active');
  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
  btn.classList.add('active');
+ if(name==='calendar')renderCalendar();
 }
 function resetToCorrectState(){
  if(!confirm('Réinitialiser toutes les données et revenir à la situation correcte du 3 août 2026 ?'))return;
