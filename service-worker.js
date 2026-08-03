@@ -1,18 +1,16 @@
-const CACHE_NAME = 'rotation-equipe-2-6-v1';
+const CACHE_NAME = 'rotation-equipe-2-7-v1';
 const APP_FILES = [
   './',
   './index.html',
-  './style.css',
-  './script.js',
+  './style.css?v=27',
+  './script.js?v=27',
   './manifest.json',
   './icon.svg'
 ];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)));
 });
 
 self.addEventListener('activate', event => {
@@ -25,18 +23,13 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, {cache:'no-store'})
       .then(response => {
-        const copy = response.clone();
+        const copy=response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
         return response;
       })
-      .catch(() =>
-        caches.match(event.request).then(cached =>
-          cached || caches.match('./index.html')
-        )
-      )
+      .catch(() => caches.match(event.request).then(r => r || caches.match('./index.html')))
   );
 });

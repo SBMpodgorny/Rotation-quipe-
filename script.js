@@ -202,13 +202,7 @@ function formatISODate(date){
  const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);
  return z.toISOString().slice(0,10);
 }
-function sameDate(a,b){return formatISODate(a)===formatISODate(b)}
-function monthTitle(date){
- return date.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
-}
-function serviceForDate(date){
- return dayInfo(date);
-}
+function sameCalendarDate(a,b){return formatISODate(a)===formatISODate(b)}
 function eventsForDate(date){
  const iso=formatISODate(date);
  return state.history.filter(h=>h.date===iso);
@@ -217,59 +211,57 @@ function renderCalendar(){
  const grid=document.getElementById('calendarGrid');
  if(!grid)return;
  document.getElementById('calendarMonthTitle').textContent=
-  monthTitle(calendarMonthDate).replace(/^./,c=>c.toUpperCase());
+  calendarMonthDate.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
 
  const year=calendarMonthDate.getFullYear();
  const month=calendarMonthDate.getMonth();
  const first=new Date(year,month,1);
  const last=new Date(year,month+1,0);
- const firstIndex=(first.getDay()+6)%7;
- const total=firstIndex+last.getDate();
- const cells=Math.ceil(total/7)*7;
+ const offset=(first.getDay()+6)%7;
+ const cellCount=Math.ceil((offset+last.getDate())/7)*7;
 
- let html='';
- for(let i=0;i<cells;i++){
-  const dayNum=i-firstIndex+1;
-  if(dayNum<1||dayNum>last.getDate()){
-   html+='<div class="calendar-day empty-day"></div>';
+ let output='';
+ for(let i=0;i<cellCount;i++){
+  const day=i-offset+1;
+  if(day<1||day>last.getDate()){
+   output+='<div class="calendar-day calendar-empty"></div>';
    continue;
   }
-  const date=new Date(year,month,dayNum);
-  const info=serviceForDate(date);
+  const date=new Date(year,month,day,12,0,0);
+  const info=dayInfo(date);
   const events=eventsForDate(date);
-  const isToday=sameDate(date,new Date());
-  const isSelected=sameDate(date,selectedCalendarDate);
   const classes=['calendar-day'];
-  if(isToday)classes.push('is-today');
-  if(isSelected)classes.push('is-selected');
+  if(sameCalendarDate(date,new Date()))classes.push('is-today');
+  if(sameCalendarDate(date,selectedCalendarDate))classes.push('is-selected');
   if(events.length)classes.push('has-events');
-  html+=`<button type="button" class="${classes.join(' ')}" onclick="selectCalendarDate('${formatISODate(date)}')">
-    <span class="calendar-number">${dayNum}</span>
+
+  output+=`<button type="button" class="${classes.join(' ')}" onclick="selectCalendarDate('${formatISODate(date)}')">
+    <span class="calendar-number">${day}</span>
     <span class="calendar-service">${info.title.replace(/^Jour \d+ · /,'')}</span>
     ${events.length?`<span class="event-count">${events.length}</span>`:''}
   </button>`;
  }
- grid.innerHTML=html;
+ grid.innerHTML=output;
  renderSelectedDay();
 }
 function renderSelectedDay(){
  const date=new Date(selectedCalendarDate);
- const info=serviceForDate(date);
+ const info=dayInfo(date);
  const events=eventsForDate(date);
+
  document.getElementById('selectedDateTitle').textContent=
   date.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
  document.getElementById('selectedDateService').textContent=info.title;
 
  const details=document.getElementById('selectedDayDetails');
  if(events.length){
-  details.innerHTML=`<div class="calendar-detail-title">Événements enregistrés</div>`+
+  details.innerHTML='<div class="calendar-detail-title">Événements enregistrés</div>'+
    events.map(h=>`<div class="calendar-event">
      <div><strong>${p(h.personId)?.name||'Personne inconnue'}</strong></div>
      <div>${actionName(h.action)} · ${h.time}</div>
    </div>`).join('');
   return;
  }
-
  if(formatISODate(date)<formatISODate(new Date())){
   details.innerHTML='<div class="empty">Aucun événement enregistré pour cette date.</div>';
   return;
@@ -277,16 +269,18 @@ function renderSelectedDay(){
 
  let forecast='';
  if(info.key==='nuit1'||info.key==='nuit2'){
-  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain à rester selon le roulement actuel</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
+  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
  }else if(info.key==='coupure'){
-  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain retour prioritaire</div><div class="forecast-name">${p(state.returnQueue[0]).name}</div></div>
+  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain retour</div><div class="forecast-name">${p(state.returnQueue[0]).name}</div></div>
   <div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
  }else if(info.key==='apres'){
   forecast=`<div class="forecast-card"><div class="forecast-label">Prochain 5ème</div><div class="forecast-name">${p(state.fifthQueue[0]).name}</div></div>`;
  }else{
   forecast='<div class="empty">Jour de repos prévu.</div>';
  }
- details.innerHTML=`<div class="calendar-detail-title">Prévision</div>${forecast}<div class="forecast-note">Cette prévision utilise les roulements actuels et ne modifie aucune donnée.</div>`;
+
+ details.innerHTML='<div class="calendar-detail-title">Prévision</div>'+forecast+
+  '<div class="forecast-note">La consultation du calendrier ne modifie pas les roulements.</div>';
 }
 function selectCalendarDate(iso){
  selectedCalendarDate=new Date(iso+'T12:00:00');
@@ -298,7 +292,12 @@ function changeCalendarMonth(delta){
  renderCalendar();
 }
 function changeSelectedDay(delta){
- selectedCalendarDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),selectedCalendarDate.getDate()+delta);
+ selectedCalendarDate=new Date(
+  selectedCalendarDate.getFullYear(),
+  selectedCalendarDate.getMonth(),
+  selectedCalendarDate.getDate()+delta,
+  12,0,0
+ );
  calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
  renderCalendar();
 }

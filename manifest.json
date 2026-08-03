@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 2.6",
-  "short_name": "Rotation 2.6",
-  "description": "Gestion des rotations avec calendrier historique et prévisionnel.",
+  "name": "Rotation Équipe 2.7",
+  "short_name": "Rotation 2.7",
+  "description": "Rotations modifiables avec calendrier historique et prévisionnel.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

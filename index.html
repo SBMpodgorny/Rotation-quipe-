@@ -7,15 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <meta name="theme-color" content="#eef3fa">
-<title>Rotation Équipe 2.6</title>
+<title>Rotation Équipe 2.7</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation Équipe 2.6</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
+<header><div><h1>Rotation Équipe 2.7</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
 
 <section id="todayView" class="view active">
  <div class="card day-card"><div class="eyebrow">Journée de travail</div><div class="day-title" id="workDate"></div><div class="day-type" id="workType"></div></div>
@@ -25,6 +25,36 @@
    <div class="today-rotations" id="todayRotationCards"></div>
  </div>
  <div class="card"><div class="section-head"><h2>Service du jour</h2><button class="undo" id="undoToday" onclick="undoLast()">↩︎ Annuler</button></div><div id="serviceActions"></div></div>
+</section>
+
+
+<section id="calendarView" class="view">
+  <div class="card calendar-card">
+    <div class="calendar-toolbar">
+      <button type="button" class="calendar-nav" onclick="changeCalendarMonth(-1)">‹</button>
+      <div class="calendar-heading">
+        <h2 id="calendarMonthTitle">Calendrier</h2>
+        <div class="calendar-subtitle">Touchez une date pour consulter le service.</div>
+      </div>
+      <button type="button" class="calendar-nav" onclick="changeCalendarMonth(1)">›</button>
+    </div>
+    <div class="weekdays">
+      <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <div class="card selected-day-card">
+    <div class="selected-day-toolbar">
+      <button type="button" class="day-nav-btn" onclick="changeSelectedDay(-1)">← Précédent</button>
+      <button type="button" class="today-btn" onclick="selectToday()">Aujourd’hui</button>
+      <button type="button" class="day-nav-btn" onclick="changeSelectedDay(1)">Suivant →</button>
+    </div>
+    <div class="eyebrow">Date sélectionnée</div>
+    <div class="day-title" id="selectedDateTitle"></div>
+    <div class="day-type" id="selectedDateService"></div>
+    <div id="selectedDayDetails" class="selected-day-details"></div>
+  </div>
 </section>
 
 <section id="rotationsView" class="view">
@@ -42,6 +72,7 @@
 
 <nav class="tabs">
  <button class="tab active" onclick="showView('today',this)"><span>🏠</span>Aujourd’hui</button>
+ <button class="tab" onclick="showView('calendar',this)"><span>📅</span>Calendrier</button>
  <button class="tab" onclick="showView('rotations',this)"><span>🔄</span>Rotations</button>
  <button class="tab" onclick="showView('journal',this)"><span>📖</span>Journal</button>
  <button class="tab" onclick="showView('team',this)"><span>👥</span>Équipe</button>
@@ -60,7 +91,7 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="script.js?v=27"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
