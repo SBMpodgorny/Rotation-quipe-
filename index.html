@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Rotation Équipe 2.0</title>
+<title>Rotation Équipe 2.2</title>
 <style>
 :root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--blue:#2563eb;--danger:#dc2626;--amber:#d97706}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 90px)}
@@ -31,7 +31,7 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,selec
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation Équipe 2.0</h1><div class="small" id="civil"></div></div><span class="badge">Cycle 4/2</span></header>
+<header><div><h1>Rotation Équipe 2.2</h1><div class="small" id="civil"></div></div><span class="badge">Cycle 4/2</span></header>
 
 <section id="todayPage" class="tab-page active">
 <div class="cycle"><div class="small">Journée de travail</div><div id="workDate" style="font-weight:800;margin-top:4px"></div><div id="cycleLabel" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
@@ -81,7 +81,7 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,selec
 
 <script>
 const ROTATIONS=[
-{id:"nuits",name:"Nuits",title:"Première + Deuxième nuit",cycles:[0,1],reverse:false,verb:"Départ"},
+{id:"nuits",name:"Nuits",title:"Ordre des personnes à rester",cycles:[0,1],reverse:false,verb:"Resté"},
 {id:"coupure",name:"Coupure",title:"Ordre de retour",cycles:[2],reverse:true,verb:"Retour"},
 {id:"cinquieme",name:"5ème",title:"Après-midi",cycles:[3],reverse:false,verb:"5ème"}
 ];
@@ -94,9 +94,13 @@ const DEFAULT=[
 {id:"p6",name:"Bernardi Jeremy",role:"Employé",inRotation:true},
 {id:"p7",name:"Gaza Sébastien",role:"Employé",inRotation:true}
 ];
-let state=JSON.parse(localStorage.getItem("rotationEquipe20"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,events:[],services:{},undo:[]};
+const INITIAL_EVENTS=[
+{id:"init_boris_reste",type:"benefit",rotationId:"nuits",holderId:"p3",beneficiaryId:"p3",workDate:"2026-08-01",time:"",reason:"",seq:2,createdAt:"2026-08-01T23:01:00"},
+{id:"init_gaza_reste",type:"benefit",rotationId:"nuits",holderId:"p7",beneficiaryId:"p7",workDate:"2026-08-01",time:"",reason:"",seq:1,createdAt:"2026-08-01T23:00:00"}
+];
+let state=JSON.parse(localStorage.getItem("rotationEquipe22"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,events:INITIAL_EVENTS,services:{"2026-08-01__nuits":{locked:true}},undo:[]};
 let calMonth=new Date();calMonth.setDate(1);let selectedDate=null,currentServiceDate=null,currentRotationId=null,cessionHolder=null;
-const save=()=>localStorage.setItem("rotationEquipe20",JSON.stringify(state));
+const save=()=>localStorage.setItem("rotationEquipe22",JSON.stringify(state));
 const person=id=>state.people.find(x=>x.id===id),active=()=>state.people.filter(x=>x.inRotation);
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function workDay(now=new Date()){let d=new Date(now);if(d.getHours()<(state.cutoff||6))d.setDate(d.getDate()-1);d.setHours(12,0,0,0);return d}
@@ -117,9 +121,9 @@ function render(){
  document.getElementById("workDate").textContent=new Date(ctx.wd+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});document.getElementById("cycleLabel").textContent=ctx.c.label;document.getElementById("nightNotice").style.display=now.getHours()<(state.cutoff||6)?"block":"none";
  renderDashboard();renderCalendar();renderRotations();renderJournal();renderTeam();save()
 }
-function renderDashboard(){let ctx=context(),root=document.getElementById("dashboard");root.innerHTML=ROTATIONS.map(r=>{let o=orderAfter(r.id,ctx.wd);return `<div class="rotation-card"><h3>${r.name}</h3><div class="small">${r.title}</div><div style="font-size:18px;font-weight:900;margin-top:8px">${o.length?person(o[0]).name:"—"}</div></div>`}).join("")}
+function renderDashboard(){let ctx=context(),root=document.getElementById("dashboard");root.innerHTML=ROTATIONS.map(r=>{let o=orderAfter(r.id,ctx.wd);return `<div class="rotation-card"><h3>${r.name}</h3><div class="small">${r.id==="nuits"?"Prochain à rester":r.id==="coupure"?"Prochain retour":"Prochain 5ème"}</div><div style="font-size:18px;font-weight:900;margin-top:8px">${o.length?person(o[0]).name:"—"}</div></div>`}).join("")}
 function renderRotations(){let ctx=context();document.getElementById("rotationsFull").innerHTML=ROTATIONS.map(r=>`<div class="rotation-card" style="margin-bottom:10px"><h3>${r.name}</h3><ol>${orderAfter(r.id,ctx.wd).map(id=>`<li>${person(id).name}</li>`).join("")}</ol></div>`).join("")}
-function renderJournal(){document.getElementById("journal").innerHTML=orderedEvents().slice().reverse().map(e=>`<div class="journal"><b>${person(e.holderId)?.name||person(e.beneficiaryId)?.name}</b>${e.holderId&&e.holderId!==e.beneficiaryId?` a cédé à <b>${person(e.beneficiaryId)?.name}</b>`:` — ${ROTATIONS.find(r=>r.id===e.rotationId)?.verb}`}<br><span class="small">${e.workDate}${e.time?" · "+e.time:""}${e.reason?" · "+e.reason:""}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>"}
+function renderJournal(){document.getElementById("journal").innerHTML=orderedEvents().slice().reverse().map(e=>`<div class="journal"><b>${person(e.holderId)?.name||person(e.beneficiaryId)?.name}</b>${e.holderId&&e.holderId!==e.beneficiaryId?` a cédé à <b>${person(e.beneficiaryId)?.name}</b>`:` — ${e.rotationId==="nuits"?"resté":ROTATIONS.find(r=>r.id===e.rotationId)?.verb?.toLowerCase()}`}<br><span class="small">${e.workDate}${e.time?" · "+e.time:""}${e.reason?" · "+e.reason:""}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>"}
 function renderCalendar(){
  document.getElementById("monthLabel").textContent=calMonth.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});let g=document.getElementById("calendar");if(!g)return;g.innerHTML="";let y=calMonth.getFullYear(),m=calMonth.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();
  for(let i=0;i<off;i++){let b=document.createElement("button");b.className="day empty";g.appendChild(b)}
@@ -139,9 +143,17 @@ function renderService(){
  let r=ROTATIONS.find(x=>x.id===currentRotationId),service=getService(currentServiceDate,currentRotationId),theory=orderBefore(currentRotationId,currentServiceDate),events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);
  document.getElementById("serviceTitle").textContent=r.name+" — "+currentServiceDate;
  let selected=events.map(e=>e.beneficiaryId);
- document.getElementById("serviceBody").innerHTML=`<div class="${service.locked?"locked":""}"><div class="columns"><div class="column"><h3>Ordre théorique</h3>${theory.filter(id=>!selected.includes(id)).map(id=>`<button class="person-btn" ${service.locked?"disabled":""} onclick="benefit('${id}')"><b>${person(id).name}</b><div class="small">${person(id).role}</div></button>`).join("")||"<div class='small'>Aucune personne restante.</div>"}</div><div class="column"><h3>Ordre réellement effectué</h3>${events.map((e,i)=>`<div class="person-btn done"><div><span class="order-num">${i+1}</span><b>${person(e.beneficiaryId).name}</b></div>${e.holderId&&e.holderId!==e.beneficiaryId?`<div class="small">Cédé par ${person(e.holderId).name}</div>`:""}<div class="time-row"><button class="secondary" ${service.locked?"disabled":""} onclick="removeEvent('${e.id}')">Retirer</button><input type="time" ${service.locked?"disabled":""} value="${e.time||""}" onchange="setTime('${e.id}',this.value)"></div></div>`).join("")||"<div class='small'>Aucune personne sélectionnée.</div>"}</div></div></div><div class="actions">${service.locked?`<button class="warning" onclick="reopenService()">🔓 Rouvrir</button>`:`<button class="success" onclick="finishService()">✅ Fin de service</button>`}<button class="secondary" onclick="clearService()">Effacer</button></div>`;
+ document.getElementById("serviceBody").innerHTML=`<div class="${service.locked?"locked":""}"><div class="columns"><div class="column"><h3>${currentRotationId==="nuits"?"Ordre prévu pour rester":currentRotationId==="coupure"?"Ordre prévu de retour":"Ordre prévu du 5ème"}</h3>${theory.filter(id=>!selected.includes(id)).map((id,index)=>`<div class="person-btn"><div><b>${person(id).name}</b><div class="small">${person(id).role}</div></div>${currentRotationId==="nuits"?`<div class="actions" style="margin-top:8px"><button class="blue" ${service.locked?"disabled":""} onclick="markNightStatus('${id}','parti')">Parti</button><button class="success" ${service.locked?"disabled":""} onclick="markNightStatus('${id}','reste')">Resté</button></div>`:`<button class="primary" style="width:100%;margin-top:8px" ${service.locked?"disabled":""} onclick="benefit('${id}')">${currentRotationId==="coupure"?"Retour effectué":"5ème accordé"}</button>`}${index===0&&!service.locked?`<button class="secondary" style="width:100%;margin-top:8px" onclick="openCession('${id}')">Céder son tour</button>`:""}</div>`).join("")||"<div class='small'>Aucune personne restante.</div>"}</div><div class="column"><h3>${currentRotationId==="nuits"?"Personnes réellement restées":currentRotationId==="coupure"?"Retours réellement effectués":"5èmes réellement accordés"}</h3>${events.map((e,i)=>`<div class="person-btn done"><div><span class="order-num">${i+1}</span><b>${person(e.beneficiaryId).name}</b> <span class="badge">${e.rotationId==="nuits"?(e.status==="parti"?"Parti":"Resté"):ROTATIONS.find(r=>r.id===e.rotationId)?.verb}</span></div>${e.holderId&&e.holderId!==e.beneficiaryId?`<div class="small">Cédé par ${person(e.holderId).name}</div>`:""}<div class="time-row"><button class="secondary" ${service.locked?"disabled":""} onclick="removeEvent('${e.id}')">Retirer</button><input type="time" ${service.locked?"disabled":""} value="${e.time||""}" onchange="setTime('${e.id}',this.value)"></div></div>`).join("")||"<div class='small'>Aucune personne sélectionnée.</div>"}</div></div></div><div class="actions">${service.locked?`<button class="warning" onclick="reopenService()">🔓 Rouvrir</button>`:`<button class="success" onclick="finishService()">✅ Fin de service</button>`}<button class="secondary" onclick="clearService()">Effacer</button></div>`;
 }
 function benefit(id){let service=getService(currentServiceDate,currentRotationId);if(service.locked)return;snap();let events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);state.events.push({id:crypto.randomUUID(),type:"benefit",rotationId:currentRotationId,holderId:id,beneficiaryId:id,workDate:currentServiceDate,time:"",reason:"",seq:events.length+1,createdAt:new Date().toISOString()});save();renderService();render()}
+function markNightStatus(id,status){
+ let service=getService(currentServiceDate,currentRotationId);
+ if(service.locked)return;
+ snap();
+ let events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);
+ state.events.push({id:crypto.randomUUID(),type:status==="reste"?"benefit":"night_departure",status,rotationId:"nuits",holderId:id,beneficiaryId:id,workDate:currentServiceDate,time:"",reason:"",seq:events.length+1,createdAt:new Date().toISOString()});
+ save();renderService();render()
+}
 function openCession(holderId){cessionHolder=holderId;let opts=active().filter(x=>x.id!==holderId);document.getElementById("cessionInfo").textContent=person(holderId).name+" conserve sa priorité.";document.getElementById("cessionBeneficiary").innerHTML=opts.map(x=>`<option value="${x.id}">${x.name}</option>`).join("");document.getElementById("cessionReason").value="";document.getElementById("cessionModal").classList.add("open")}
 function closeCession(){document.getElementById("cessionModal").classList.remove("open")}
 function confirmCession(){let beneficiary=document.getElementById("cessionBeneficiary").value,reason=document.getElementById("cessionReason").value.trim();let events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);snap();state.events.push({id:crypto.randomUUID(),type:"benefit",rotationId:currentRotationId,holderId:cessionHolder,beneficiaryId:beneficiary,workDate:currentServiceDate,time:"",reason,seq:events.length+1,createdAt:new Date().toISOString()});save();closeCession();renderService();render()}
