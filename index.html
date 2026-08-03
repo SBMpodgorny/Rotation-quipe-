@@ -8,57 +8,82 @@
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Rotation Équipe</title>
+<title>Rotation Équipe 2.0</title>
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--blue:#2563eb;--danger:#dc2626}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 28px)}
-.app{max-width:760px;margin:auto}.row,.section,header{display:flex;justify-content:space-between;align-items:center;gap:10px}header{align-items:flex-start;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
-.card,.cycle{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #0001}.cycle{background:#eff6ff;border:1px solid #bfdbfe}
-.section{margin-bottom:12px}.section h2{font-size:18px;margin:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-button,input,select{font:inherit}button{border:0;border-radius:14px;padding:13px;font-weight:750}.primary{background:#0f172a;color:white}.secondary{background:#e2e8f0}.success{background:var(--ok);color:white}.blue{background:#dbeafe;color:#1d4ed8}.danger{background:#fee2e2;color:#991b1b}
-.service{background:#f8fafc;border:1px solid var(--line);text-align:left}.service.active{background:#0f172a;color:white}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e2e8f0;font-size:12px;font-weight:800}
-.next{text-align:center;padding:20px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}.next-name{font-size:30px;font-weight:900;margin:8px 0}
-ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--line)}
-.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:50}.modal.open{display:flex}.sheet{background:white;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:92vh;overflow:auto}
-.calendar-head,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-head{text-align:center;font-size:12px;color:var(--muted);margin-bottom:6px}.day{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:white}.day.empty{visibility:hidden}.day.selected{background:#0f172a;color:white}.day.today{border:2px solid var(--blue)}.day .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);margin:3px auto 0}
-.month-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.member,.person-day{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
-.rank{display:flex;gap:8px;margin-top:10px}.rank button{flex:1}.notice{padding:12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;margin-bottom:12px}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--blue:#2563eb;--danger:#dc2626;--amber:#d97706}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 90px)}
+.app{max-width:820px;margin:auto}.row,.section,header{display:flex;justify-content:space-between;align-items:center;gap:10px}header{align-items:flex-start;margin-bottom:12px}
+h1{margin:0;font-size:27px}.small{font-size:13px;color:var(--muted)}.card,.cycle{background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px #0001}.cycle{background:#eff6ff;border:1px solid #bfdbfe}
+.section{margin-bottom:10px}.section h2{font-size:18px;margin:0}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e2e8f0;font-size:12px;font-weight:800}
+button,input,select,textarea{font:inherit}button{border:0;border-radius:14px;padding:12px;font-weight:750}.primary{background:#0f172a;color:#fff}.secondary{background:#e2e8f0}.success{background:var(--ok);color:#fff}.blue{background:#dbeafe;color:#1d4ed8}.danger{background:#fee2e2;color:#991b1b}.warning{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.rotation-card{border:1px solid var(--line);border-radius:16px;padding:12px;background:#f8fafc}.rotation-card h3{margin:0 0 8px;font-size:15px}
+ol{padding-left:22px;margin:0}li{padding:8px 0;border-bottom:1px solid var(--line)}.tab-page{display:none}.tab-page.active{display:block}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(env(safe-area-inset-bottom) + 8px);z-index:40}
+.tab-btn{background:transparent;padding:7px 2px;font-size:11px;color:var(--muted)}.tab-btn.active{color:#0f172a;font-weight:900}.tab-btn span{display:block;font-size:20px;margin-bottom:2px}
+.calendar-head,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-head{text-align:center;font-size:12px;color:var(--muted);margin-bottom:6px}.day{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:#fff}.day.empty{visibility:hidden}.day.selected{background:#0f172a;color:#fff}.day.today{border:2px solid var(--blue)}.day .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);margin:3px auto 0}
+.month-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.column{border:1px solid var(--line);border-radius:16px;padding:10px;background:#f8fafc;min-height:180px}.column h3{font-size:14px;margin:0 0 10px}.person-btn{width:100%;text-align:left;background:#fff;border:1px solid var(--line);margin-bottom:8px;padding:11px}.person-btn.done{background:#ecfdf5;border-color:#86efac}
+.order-num{display:inline-flex;width:24px;height:24px;border-radius:999px;background:#0f172a;color:#fff;align-items:center;justify-content:center;margin-right:8px;font-size:12px}.time-row{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-top:8px}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:50}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:820px;border-radius:22px;padding:18px;max-height:92vh;overflow:auto}
+label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.member,.journal{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.rank,.actions{display:flex;gap:8px;margin-top:10px}.rank button,.actions button{flex:1}.notice{padding:12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;margin-bottom:12px}.locked{opacity:.7}
+@media(max-width:650px){.grid,.columns{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation équipe</h1><div class="small" id="civil"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
-<div class="cycle"><div class="small">Journée de travail</div><div id="workDate" style="font-weight:800;margin-top:4px"></div><div id="cycle" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
+<header><div><h1>Rotation Équipe 2.0</h1><div class="small" id="civil"></div></div><span class="badge">Cycle 4/2</span></header>
+
+<section id="todayPage" class="tab-page active">
+<div class="cycle"><div class="small">Journée de travail</div><div id="workDate" style="font-weight:800;margin-top:4px"></div><div id="cycleLabel" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
 <div id="nightNotice" class="notice" style="display:none">Avant 6 h, l’application reste sur la journée de travail précédente.</div>
-<div class="card"><div class="section"><h2>Calendrier</h2><button class="blue" onclick="openCalendar()">📅 Ouvrir</button></div><div class="small">Première nuit et Deuxième nuit partagent une seule rotation de départ continue. La Coupure et l’Après-midi restent indépendantes.</div></div>
-<div class="card"><div class="section"><h2>Rotation du jour</h2><span class="badge" id="rotationLabel"></span></div><div class="grid" id="services"></div></div>
-<div class="card"><div class="next"><div class="small" id="nextLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><button class="success" style="width:100%;margin-top:10px" onclick="validateCurrent()">✅ Valider cette personne</button></div>
-<div class="card"><div class="section"><h2>Ordre actuel</h2><button class="secondary" onclick="undo()">↩️ Annuler</button></div><ol id="order"></ol></div>
-<div class="card"><div class="section"><h2>Historique récent</h2></div><div id="history"></div></div>
+<div class="card"><div class="section"><h2>État des rotations</h2><button class="blue" onclick="openCurrentService()">Saisir le service</button></div><div class="grid" id="dashboard"></div></div>
+</section>
+
+<section id="calendarPage" class="tab-page">
+<div class="card"><div class="month-nav"><button class="secondary" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="secondary" onclick="changeMonth(1)">›</button></div><div class="calendar-head"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div><div class="calendar" id="calendar"></div></div>
+<div id="dayPanel"></div>
+</section>
+
+<section id="rotationsPage" class="tab-page">
+<div class="card"><div class="section"><h2>Rotations actuelles</h2></div><div id="rotationsFull"></div></div>
+</section>
+
+<section id="journalPage" class="tab-page">
+<div class="card"><div class="section"><h2>Journal des décisions</h2></div><div id="journal"></div></div>
+</section>
+
+<section id="teamPage" class="tab-page">
+<div class="card"><div class="section"><h2>Équipe et ancienneté</h2></div><div id="teamEditor"></div><label>Date du Jour 1 — Fermeture</label><input type="date" id="cycleStart"><button class="primary" style="width:100%;margin-top:12px" onclick="saveTeam()">Enregistrer</button></div>
+<div class="card"><div class="section"><h2>Sauvegarde</h2></div><div class="actions"><button class="blue" onclick="exportData()">Exporter</button><button class="secondary" onclick="document.getElementById('importFile').click()">Importer</button></div><input id="importFile" type="file" accept="application/json" style="display:none" onchange="importData(event)"></div>
+</section>
 </div>
 
-<div class="modal" id="settingsModal"><div class="sheet">
-<div class="section"><h2>Équipe et ancienneté</h2><button class="secondary" onclick="closeSettings()">Fermer</button></div>
-<div id="editors"></div>
-<label>Date du Jour 1 — Fermeture</label><input type="date" id="cycleStart">
-<button class="primary" style="width:100%;margin-top:12px" onclick="saveSettings()">Enregistrer</button>
+<nav class="tabs">
+<button class="tab-btn active" onclick="showTab('todayPage',this)"><span>🏠</span>Aujourd’hui</button>
+<button class="tab-btn" onclick="showTab('calendarPage',this)"><span>📅</span>Calendrier</button>
+<button class="tab-btn" onclick="showTab('rotationsPage',this)"><span>🔄</span>Rotations</button>
+<button class="tab-btn" onclick="showTab('journalPage',this)"><span>📖</span>Journal</button>
+<button class="tab-btn" onclick="showTab('teamPage',this)"><span>👥</span>Équipe</button>
+</nav>
+
+<div class="modal" id="serviceModal"><div class="sheet">
+<div class="section"><h2 id="serviceTitle">Service</h2><button class="secondary" onclick="closeService()">Fermer</button></div>
+<div id="serviceBody"></div>
 </div></div>
 
-<div class="modal" id="calendarModal"><div class="sheet">
-<div class="section"><h2>Calendrier</h2><button class="secondary" onclick="closeCalendar()">Fermer</button></div>
-<div class="month-nav"><button class="secondary" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="secondary" onclick="changeMonth(1)">›</button></div>
-<div class="calendar-head"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div>
-<div class="calendar" id="calendar"></div>
-<div id="dayPanel" style="margin-top:16px"></div>
+<div class="modal" id="cessionModal"><div class="sheet">
+<div class="section"><h2>Céder le tour</h2><button class="secondary" onclick="closeCession()">Fermer</button></div>
+<div class="small" id="cessionInfo"></div>
+<label>Bénéficiaire</label><select id="cessionBeneficiary"></select>
+<label>Motif (facultatif)</label><input id="cessionReason" placeholder="Ex. convenance personnelle">
+<button class="primary" style="width:100%;margin-top:12px" onclick="confirmCession()">Valider la cession</button>
 </div></div>
 
 <script>
 const ROTATIONS=[
-{id:"nuits_depart",cycle:0,name:"Première nuit",title:"Ordre de départ commun",verb:"Départ effectué"},
-{id:"nuits_depart",cycle:1,name:"Deuxième nuit",title:"Ordre de départ commun",verb:"Départ effectué"},
-{id:"j3_retour",cycle:2,name:"Coupure",title:"Ordre de retour",verb:"Retour effectué"},
-{id:"j4_5eme",cycle:3,name:"Après-midi",title:"Départ 5ème",verb:"Départ 5ème effectué"}
+{id:"nuits",name:"Nuits",title:"Première + Deuxième nuit",cycles:[0,1],reverse:false,verb:"Départ"},
+{id:"coupure",name:"Coupure",title:"Ordre de retour",cycles:[2],reverse:true,verb:"Retour"},
+{id:"cinquieme",name:"5ème",title:"Après-midi",cycles:[3],reverse:false,verb:"5ème"}
 ];
 const DEFAULT=[
 {id:"p1",name:"Rigoli Jean-Luc",role:"Chef",inRotation:false},
@@ -69,73 +94,64 @@ const DEFAULT=[
 {id:"p6",name:"Bernardi Jeremy",role:"Employé",inRotation:true},
 {id:"p7",name:"Gaza Sébastien",role:"Employé",inRotation:true}
 ];
-let state=JSON.parse(localStorage.getItem("rotationEquipeV9"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,selected:"nuits_depart",events:[],undo:[]};
-let calMonth=new Date();calMonth.setDate(1);let selectedDate=null;
-const save=()=>localStorage.setItem("rotationEquipeV9",JSON.stringify(state));
-const p=id=>state.people.find(x=>x.id===id),active=()=>state.people.filter(x=>x.inRotation);
+let state=JSON.parse(localStorage.getItem("rotationEquipe20"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,events:[],services:{},undo:[]};
+let calMonth=new Date();calMonth.setDate(1);let selectedDate=null,currentServiceDate=null,currentRotationId=null,cessionHolder=null;
+const save=()=>localStorage.setItem("rotationEquipe20",JSON.stringify(state));
+const person=id=>state.people.find(x=>x.id===id),active=()=>state.people.filter(x=>x.inRotation);
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function workDay(now=new Date()){let d=new Date(now);if(d.getHours()<(state.cutoff||6))d.setDate(d.getDate()-1);d.setHours(12,0,0,0);return d}
-function cycleFor(ds){let s=new Date(state.cycleStart+"T12:00:00"),d=new Date(ds+"T12:00:00"),i=((Math.floor((d-s)/86400000)%6)+6)%6;return{i,label:["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"][i],rotation:ROTATIONS.find(r=>r.cycle===i)||null}}
-function orderedEvents(){return [...state.events].sort((a,b)=>a.workDate.localeCompare(b.workDate)||a.time.localeCompare(b.time)||a.createdAt.localeCompare(b.createdAt))}
+function cycleFor(ds){let s=new Date(state.cycleStart+"T12:00:00"),d=new Date(ds+"T12:00:00"),i=((Math.floor((d-s)/86400000)%6)+6)%6;return{i,label:["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"][i],rotation:ROTATIONS.find(r=>r.cycles.includes(i))||null}}
 function initialOrder(){return active().map(x=>x.id)}
-function orderBefore(rotationId,date){let o=initialOrder();for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate<date)){if(o.includes(e.personId))o=o.filter(id=>id!==e.personId).concat(e.personId)}return o}
-function orderAfter(rotationId,date){let o=orderBefore(rotationId,date);for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate===date)){if(o.includes(e.personId))o=o.filter(id=>id!==e.personId).concat(e.personId)}return o}
+function orderedEvents(){return [...state.events].sort((a,b)=>a.workDate.localeCompare(b.workDate)||a.seq-b.seq)}
+function applyEvent(order,e){if(!order.includes(e.beneficiaryId))return order;let o=order.filter(id=>id!==e.beneficiaryId);return [...o,e.beneficiaryId]}
+function rawOrderBefore(rotationId,date){let o=initialOrder();for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate<date&&x.type==="benefit"))o=applyEvent(o,e);return o}
+function displayOrder(rotationId,order){return ROTATIONS.find(r=>r.id===rotationId)?.reverse?[...order].reverse():order}
+function orderBefore(rotationId,date){return displayOrder(rotationId,rawOrderBefore(rotationId,date))}
+function orderAfter(rotationId,date){let o=rawOrderBefore(rotationId,date);for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate===date&&x.type==="benefit"))o=applyEvent(o,e);return displayOrder(rotationId,o)}
+function key(date,rotationId){return date+"__"+rotationId}function getService(date,rotationId){return state.services[key(date,rotationId)]||{locked:false}}function setService(date,rotationId,v){state.services[key(date,rotationId)]=v}
 function context(){let wd=iso(workDay()),c=cycleFor(wd);return{wd,c}}
 function snap(){state.undo.push(JSON.stringify({...state,undo:[]}));if(state.undo.length>30)state.undo.shift()}
+function showTab(id,btn){document.querySelectorAll(".tab-page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");render()}
 function render(){
- const now=new Date(),ctx=context();
- document.getElementById("civil").textContent=now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
- document.getElementById("workDate").textContent=new Date(ctx.wd+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
- document.getElementById("cycle").textContent=ctx.c.label;
- document.getElementById("nightNotice").style.display=now.getHours()<(state.cutoff||6)?"block":"none";
- if(ctx.c.rotation)state.selected=ctx.c.rotation.id;
- const root=document.getElementById("services");root.innerHTML="";
- [
-{id:"nuits_depart",name:"Première + Deuxième nuit",title:"Ordre de départ commun"},
-{id:"j3_retour",name:"Coupure",title:"Ordre de retour"},
-{id:"j4_5eme",name:"Après-midi",title:"Départ 5ème"}
-].forEach(r=>{let b=document.createElement("button");b.className="service"+(r.id===state.selected?" active":"");b.innerHTML="<b>"+r.name+"</b><div class='small'>"+r.title+"</div>";b.onclick=()=>{state.selected=r.id;save();render()};root.appendChild(b)});
- const r=ROTATIONS.find(x=>x.id===state.selected),o=orderAfter(r.id,ctx.wd);
- document.getElementById("rotationLabel").textContent=r.title;
- document.getElementById("nextLabel").textContent=r.title;
- document.getElementById("nextName").textContent=o.length?p(o[0]).name:"—";document.getElementById("nextRole").textContent=o.length?p(o[0]).role:"—";
- document.getElementById("order").innerHTML=o.map(id=>`<li><b>${p(id).name}</b><div class="small">${p(id).role}</div></li>`).join("");
- document.getElementById("history").innerHTML=orderedEvents().slice(-12).reverse().map(e=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${p(e.personId)?.name}</b> — ${ROTATIONS.find(r=>r.id===e.rotationId)?.verb}<br><span class="small">${e.workDate} · ${e.time}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>";
- save();
+ let now=new Date(),ctx=context();document.getElementById("civil").textContent=now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+ document.getElementById("workDate").textContent=new Date(ctx.wd+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});document.getElementById("cycleLabel").textContent=ctx.c.label;document.getElementById("nightNotice").style.display=now.getHours()<(state.cutoff||6)?"block":"none";
+ renderDashboard();renderCalendar();renderRotations();renderJournal();renderTeam();save()
 }
-function validateCurrent(){let ctx=context(),r=ROTATIONS.find(x=>x.id===state.selected),o=orderAfter(r.id,ctx.wd);if(!o.length)return;snap();state.events.push({id:crypto.randomUUID(),rotationId:r.id,personId:o[0],workDate:ctx.wd,time:new Date().toTimeString().slice(0,5),createdAt:new Date().toISOString()});save();render()}
-function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let old=JSON.parse(state.undo.pop()),u=state.undo;state=old;state.undo=u;save();render()}
-function openSettings(){renderEditors();document.getElementById("cycleStart").value=state.cycleStart;document.getElementById("settingsModal").classList.add("open")}
-function closeSettings(){document.getElementById("settingsModal").classList.remove("open")}
-function renderEditors(){document.getElementById("editors").innerHTML=state.people.map((x,i)=>`<div class="member"><div class="row"><strong>${i+1}. ${x.name}</strong><span class="badge">${x.inRotation?"Dans la rotation":"Hors rotation"}</span></div><label>Nom</label><input id="n_${x.id}" value="${x.name}"><label>Fonction</label><select id="r_${x.id}"><option ${x.role==="Chef"?"selected":""}>Chef</option><option ${x.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${x.role==="Employé"?"selected":""}>Employé</option></select><label>Participation</label><select id="i_${x.id}"><option value="true" ${x.inRotation?"selected":""}>Dans la rotation</option><option value="false" ${!x.inRotation?"selected":""}>Hors rotation</option></select><div class="rank"><button class="primary" onclick="move(${i},-1)">⬆️ Plus ancien</button><button class="secondary" onclick="move(${i},1)">⬇️ Moins ancien</button></div></div>`).join("")}
-function capture(){state.people.forEach(x=>{let n=document.getElementById("n_"+x.id),r=document.getElementById("r_"+x.id),i=document.getElementById("i_"+x.id);if(n)x.name=n.value.trim()||x.name;if(r)x.role=r.value;if(i)x.inRotation=i.value==="true"})}
-function move(i,d){capture();let j=i+d;if(j<0||j>=state.people.length)return;[state.people[i],state.people[j]]=[state.people[j],state.people[i]];renderEditors()}
-function saveSettings(){capture();state.cycleStart=document.getElementById("cycleStart").value||"2026-08-01";save();closeSettings();render()}
-function openCalendar(){calMonth=new Date();calMonth.setDate(1);selectedDate=iso(workDay());document.getElementById("calendarModal").classList.add("open");renderCalendar()}
-function closeCalendar(){document.getElementById("calendarModal").classList.remove("open")}
-function changeMonth(d){calMonth.setMonth(calMonth.getMonth()+d);renderCalendar()}
+function renderDashboard(){let ctx=context(),root=document.getElementById("dashboard");root.innerHTML=ROTATIONS.map(r=>{let o=orderAfter(r.id,ctx.wd);return `<div class="rotation-card"><h3>${r.name}</h3><div class="small">${r.title}</div><div style="font-size:18px;font-weight:900;margin-top:8px">${o.length?person(o[0]).name:"—"}</div></div>`}).join("")}
+function renderRotations(){let ctx=context();document.getElementById("rotationsFull").innerHTML=ROTATIONS.map(r=>`<div class="rotation-card" style="margin-bottom:10px"><h3>${r.name}</h3><ol>${orderAfter(r.id,ctx.wd).map(id=>`<li>${person(id).name}</li>`).join("")}</ol></div>`).join("")}
+function renderJournal(){document.getElementById("journal").innerHTML=orderedEvents().slice().reverse().map(e=>`<div class="journal"><b>${person(e.holderId)?.name||person(e.beneficiaryId)?.name}</b>${e.holderId&&e.holderId!==e.beneficiaryId?` a cédé à <b>${person(e.beneficiaryId)?.name}</b>`:` — ${ROTATIONS.find(r=>r.id===e.rotationId)?.verb}`}<br><span class="small">${e.workDate}${e.time?" · "+e.time:""}${e.reason?" · "+e.reason:""}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>"}
 function renderCalendar(){
- document.getElementById("monthLabel").textContent=calMonth.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
- let g=document.getElementById("calendar");g.innerHTML="";let y=calMonth.getFullYear(),m=calMonth.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();
+ document.getElementById("monthLabel").textContent=calMonth.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});let g=document.getElementById("calendar");if(!g)return;g.innerHTML="";let y=calMonth.getFullYear(),m=calMonth.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();
  for(let i=0;i<off;i++){let b=document.createElement("button");b.className="day empty";g.appendChild(b)}
- for(let d=1;d<=last;d++){let ds=iso(new Date(y,m,d)),b=document.createElement("button"),has=state.events.some(e=>e.workDate===ds);b.className="day"+(ds===selectedDate?" selected":"")+(ds===iso(workDay())?" today":"");b.innerHTML=d+(has?"<div class='dot'></div>":"");b.onclick=()=>{selectedDate=ds;renderCalendar()};g.appendChild(b)}
- renderDayPanel();
+ for(let d=1;d<=last;d++){let ds=iso(new Date(y,m,d)),b=document.createElement("button"),has=state.events.some(e=>e.workDate===ds);b.className="day"+(ds===selectedDate?" selected":"")+(ds===iso(workDay())?" today":"");b.innerHTML=d+(has?"<div class='dot'></div>":"");b.onclick=()=>{selectedDate=ds;renderCalendar();renderDayPanel()};g.appendChild(b)}
+ renderDayPanel()
 }
-function renderDayPanel(){
- let c=cycleFor(selectedDate),panel=document.getElementById("dayPanel");
- if(!c.rotation){panel.innerHTML=`<div class="cycle"><b>${c.label}</b></div>`;return}
- let before=orderBefore(c.rotation.id,selectedDate),events=orderedEvents().filter(e=>e.rotationId===c.rotation.id&&e.workDate===selectedDate),done=new Map(events.map(e=>[e.personId,e]));
- panel.innerHTML=`<div class="cycle"><div class="small">${new Date(selectedDate+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div><b>${c.label} · ${c.rotation.title}</b></div>
- <div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="small">Ordre au début du service</div><ol>${before.map(id=>`<li>${p(id).name}</li>`).join("")}</ol></div>
- ${before.map(id=>{let e=done.get(id);return `<div class="person-day"><div class="row"><b>${p(id).name}</b><input type="checkbox" id="chk_${id}" ${e?"checked":""} style="width:22px;height:22px"></div><label>Heure individuelle</label><input type="time" id="time_${id}" value="${e?e.time:(c.rotation.id==="j3_retour"?"22:00":"05:00")}"></div>`}).join("")}
- <button class="primary" style="width:100%" onclick="saveDay('${c.rotation.id}')">💾 Enregistrer cette journée</button>`;
+function changeMonth(d){calMonth.setMonth(calMonth.getMonth()+d);renderCalendar()}
+function renderDayPanel(){let panel=document.getElementById("dayPanel");if(!panel)return;if(!selectedDate)selectedDate=iso(workDay());let c=cycleFor(selectedDate);if(!c.rotation){panel.innerHTML=`<div class="card"><b>${c.label}</b></div>`;return}let r=c.rotation,o=orderBefore(r.id,selectedDate),events=orderedEvents().filter(e=>e.workDate===selectedDate&&e.rotationId===r.id);panel.innerHTML=`<div class="card"><div class="section"><h2>${c.label} · ${r.name}</h2><button class="blue" onclick="openService('${selectedDate}','${r.id}')">Modifier</button></div><div class="small">Ordre théorique</div><ol>${o.map(id=>`<li>${person(id).name}</li>`).join("")}</ol><div class="small" style="margin-top:10px">Événements : ${events.length}</div></div>`}
+function renderTeam(){let root=document.getElementById("teamEditor");if(!root)return;root.innerHTML=state.people.map((x,i)=>`<div class="member"><div class="row"><strong>${i+1}. ${x.name}</strong><span class="badge">${x.inRotation?"Dans la rotation":"Hors rotation"}</span></div><label>Nom</label><input id="n_${x.id}" value="${x.name}"><label>Fonction</label><select id="r_${x.id}"><option ${x.role==="Chef"?"selected":""}>Chef</option><option ${x.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${x.role==="Employé"?"selected":""}>Employé</option></select><label>Participation</label><select id="i_${x.id}"><option value="true" ${x.inRotation?"selected":""}>Dans la rotation</option><option value="false" ${!x.inRotation?"selected":""}>Hors rotation</option></select><div class="rank"><button class="primary" onclick="movePerson(${i},-1)">⬆️ Plus ancien</button><button class="secondary" onclick="movePerson(${i},1)">⬇️ Moins ancien</button></div></div>`).join("");document.getElementById("cycleStart").value=state.cycleStart}
+function captureTeam(){state.people.forEach(x=>{let n=document.getElementById("n_"+x.id),r=document.getElementById("r_"+x.id),i=document.getElementById("i_"+x.id);if(n)x.name=n.value.trim()||x.name;if(r)x.role=r.value;if(i)x.inRotation=i.value==="true"})}
+function movePerson(i,d){captureTeam();let j=i+d;if(j<0||j>=state.people.length)return;[state.people[i],state.people[j]]=[state.people[j],state.people[i]];renderTeam()}
+function saveTeam(){captureTeam();state.cycleStart=document.getElementById("cycleStart").value||"2026-08-01";save();render();alert("Équipe enregistrée.")}
+function openCurrentService(){let ctx=context();if(!ctx.c.rotation)return alert("Jour de repos.");openService(ctx.wd,ctx.c.rotation.id)}
+function openService(date,rotationId){currentServiceDate=date;currentRotationId=rotationId;document.getElementById("serviceModal").classList.add("open");renderService()}
+function closeService(){document.getElementById("serviceModal").classList.remove("open")}
+function renderService(){
+ let r=ROTATIONS.find(x=>x.id===currentRotationId),service=getService(currentServiceDate,currentRotationId),theory=orderBefore(currentRotationId,currentServiceDate),events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);
+ document.getElementById("serviceTitle").textContent=r.name+" — "+currentServiceDate;
+ let selected=events.map(e=>e.beneficiaryId);
+ document.getElementById("serviceBody").innerHTML=`<div class="${service.locked?"locked":""}"><div class="columns"><div class="column"><h3>Ordre théorique</h3>${theory.filter(id=>!selected.includes(id)).map(id=>`<button class="person-btn" ${service.locked?"disabled":""} onclick="benefit('${id}')"><b>${person(id).name}</b><div class="small">${person(id).role}</div></button>`).join("")||"<div class='small'>Aucune personne restante.</div>"}</div><div class="column"><h3>Ordre réellement effectué</h3>${events.map((e,i)=>`<div class="person-btn done"><div><span class="order-num">${i+1}</span><b>${person(e.beneficiaryId).name}</b></div>${e.holderId&&e.holderId!==e.beneficiaryId?`<div class="small">Cédé par ${person(e.holderId).name}</div>`:""}<div class="time-row"><button class="secondary" ${service.locked?"disabled":""} onclick="removeEvent('${e.id}')">Retirer</button><input type="time" ${service.locked?"disabled":""} value="${e.time||""}" onchange="setTime('${e.id}',this.value)"></div></div>`).join("")||"<div class='small'>Aucune personne sélectionnée.</div>"}</div></div></div><div class="actions">${service.locked?`<button class="warning" onclick="reopenService()">🔓 Rouvrir</button>`:`<button class="success" onclick="finishService()">✅ Fin de service</button>`}<button class="secondary" onclick="clearService()">Effacer</button></div>`;
 }
-function saveDay(rotationId){
- snap();state.events=state.events.filter(e=>!(e.rotationId===rotationId&&e.workDate===selectedDate));
- let before=orderBefore(rotationId,selectedDate);
- before.forEach(id=>{if(document.getElementById("chk_"+id).checked)state.events.push({id:crypto.randomUUID(),rotationId,personId:id,workDate:selectedDate,time:document.getElementById("time_"+id).value||"12:00",createdAt:new Date().toISOString()})});
- save();renderCalendar();render();alert("Journée enregistrée. La prochaine occurrence de cette rotation a été recalculée.");
-}
+function benefit(id){let service=getService(currentServiceDate,currentRotationId);if(service.locked)return;snap();let events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);state.events.push({id:crypto.randomUUID(),type:"benefit",rotationId:currentRotationId,holderId:id,beneficiaryId:id,workDate:currentServiceDate,time:"",reason:"",seq:events.length+1,createdAt:new Date().toISOString()});save();renderService();render()}
+function openCession(holderId){cessionHolder=holderId;let opts=active().filter(x=>x.id!==holderId);document.getElementById("cessionInfo").textContent=person(holderId).name+" conserve sa priorité.";document.getElementById("cessionBeneficiary").innerHTML=opts.map(x=>`<option value="${x.id}">${x.name}</option>`).join("");document.getElementById("cessionReason").value="";document.getElementById("cessionModal").classList.add("open")}
+function closeCession(){document.getElementById("cessionModal").classList.remove("open")}
+function confirmCession(){let beneficiary=document.getElementById("cessionBeneficiary").value,reason=document.getElementById("cessionReason").value.trim();let events=orderedEvents().filter(e=>e.workDate===currentServiceDate&&e.rotationId===currentRotationId);snap();state.events.push({id:crypto.randomUUID(),type:"benefit",rotationId:currentRotationId,holderId:cessionHolder,beneficiaryId:beneficiary,workDate:currentServiceDate,time:"",reason,seq:events.length+1,createdAt:new Date().toISOString()});save();closeCession();renderService();render()}
+function removeEvent(id){snap();state.events=state.events.filter(e=>e.id!==id);save();renderService();render()}
+function setTime(id,time){let e=state.events.find(x=>x.id===id);if(e){e.time=time;save();render()}}
+function finishService(){snap();setService(currentServiceDate,currentRotationId,{locked:true});save();renderService();render();alert("Service terminé.")}
+function reopenService(){snap();setService(currentServiceDate,currentRotationId,{locked:false});save();renderService();render()}
+function clearService(){if(!confirm("Effacer toutes les décisions de ce service ?"))return;snap();state.events=state.events.filter(e=>!(e.workDate===currentServiceDate&&e.rotationId===currentRotationId));setService(currentServiceDate,currentRotationId,{locked:false});save();renderService();render()}
+function exportData(){let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="rotation-equipe-sauvegarde.json";a.click();URL.revokeObjectURL(a.href)}
+function importData(ev){let f=ev.target.files[0];if(!f)return;let reader=new FileReader();reader.onload=()=>{try{state=JSON.parse(reader.result);save();render();alert("Sauvegarde importée.")}catch(e){alert("Fichier invalide.")}};reader.readAsText(f)}
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 render();
 </script>
