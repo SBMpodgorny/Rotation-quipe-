@@ -1,100 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Rotation Équipe</title>
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--danger:#dc2626;--blue:#2563eb}
+:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--blue:#2563eb;--danger:#dc2626}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 28px)}
-.app{max-width:760px;margin:auto}header,.section,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}header{align-items:flex-start;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
-.card,.cycle{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #00000010}.cycle{background:#eff6ff;border:1px solid #bfdbfe}
-.section{margin-bottom:12px}.section h2{margin:0;font-size:18px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-button,input,select{font:inherit}button{border:0;border-radius:14px;padding:13px 14px;font-weight:750}.service{background:#f8fafc;border:1px solid var(--line);text-align:left}.service.active{background:#0f172a;color:#fff}
-.primary{background:#0f172a;color:#fff}.success{background:var(--ok);color:#fff}.secondary{background:#e2e8f0}.warning{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.danger{background:#fee2e2;color:#991b1b}.blue{background:#dbeafe;color:#1d4ed8}
-.next{text-align:center;padding:20px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}.next-name{font-size:31px;font-weight:900;margin:8px 0}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e2e8f0;font-size:12px;font-weight:800}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}ol{padding-left:24px;margin:0}li{padding:11px 0;border-bottom:1px solid var(--line)}
-.status{padding:5px 8px;border-radius:999px;font-size:12px;background:#dcfce7;color:#166534}.status.absent{background:#fee2e2;color:#991b1b}.history{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
-.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:50}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:92vh;overflow:auto}
-.member,.past-item{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
-.rank{display:flex;gap:8px;margin-top:10px}.rank button{flex:1}.past-actions{display:flex;gap:8px;margin-top:10px}.past-actions button{flex:1}.date-tools{display:grid;grid-template-columns:1fr auto;gap:10px}
-.notice{padding:12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;margin-bottom:12px}
+.app{max-width:760px;margin:auto}.row,.section,header{display:flex;justify-content:space-between;align-items:center;gap:10px}header{align-items:flex-start;margin-bottom:14px}h1{margin:0;font-size:28px}.small{font-size:13px;color:var(--muted)}
+.card,.cycle{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #0001}.cycle{background:#eff6ff;border:1px solid #bfdbfe}
+.section{margin-bottom:12px}.section h2{font-size:18px;margin:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+button,input,select{font:inherit}button{border:0;border-radius:14px;padding:13px;font-weight:750}.primary{background:#0f172a;color:white}.secondary{background:#e2e8f0}.success{background:var(--ok);color:white}.blue{background:#dbeafe;color:#1d4ed8}.danger{background:#fee2e2;color:#991b1b}
+.service{background:#f8fafc;border:1px solid var(--line);text-align:left}.service.active{background:#0f172a;color:white}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e2e8f0;font-size:12px;font-weight:800}
+.next{text-align:center;padding:20px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}.next-name{font-size:30px;font-weight:900;margin:8px 0}
+ol{padding-left:24px;margin:0}li{padding:10px 0;border-bottom:1px solid var(--line)}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:50}.modal.open{display:flex}.sheet{background:white;width:100%;max-width:760px;border-radius:22px;padding:18px;max-height:92vh;overflow:auto}
+.calendar-head,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-head{text-align:center;font-size:12px;color:var(--muted);margin-bottom:6px}.day{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:white}.day.empty{visibility:hidden}.day.selected{background:#0f172a;color:white}.day.today{border:2px solid var(--blue)}.day .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);margin:3px auto 0}
+.month-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.member,.person-day{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}
+.rank{display:flex;gap:8px;margin-top:10px}.rank button{flex:1}.notice{padding:12px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;margin-bottom:12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation équipe</h1><div class="small" id="date"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
-<div class="cycle"><div class="small">Journée de travail actuelle</div><div id="workDateLabel" style="font-size:16px;font-weight:800;margin-top:4px"></div><div id="cycleLabel" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
-<div id="nightNotice" class="notice" style="display:none">Après minuit et avant 6 h, l’application reste sur la journée de travail précédente. Une personne absente conserve son tour et redevient prioritaire à son retour.</div>
-
-<div class="card"><div class="section"><h2>Journées passées</h2><button class="blue" onclick="openPastDays()">📅 Modifier</button></div><div class="small">Consulte et corrige les départs ou retours enregistrés pour une date antérieure.</div></div>
-<div class="card"><div class="section"><h2>Service</h2><span class="badge" id="serviceBadge"></span></div><div class="grid" id="services"></div></div>
-<div class="card"><div class="next"><div class="small" id="actionLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><div class="actions"><button class="success" onclick="validateTurn()">✅ Valider</button><button class="warning" onclick="skipTurn()">⏭️ Passer</button></div></div>
+<header><div><h1>Rotation équipe</h1><div class="small" id="civil"></div></div><button class="secondary" onclick="openSettings()">⚙️ Réglages</button></header>
+<div class="cycle"><div class="small">Journée de travail</div><div id="workDate" style="font-weight:800;margin-top:4px"></div><div id="cycle" style="font-size:21px;font-weight:900;margin-top:4px"></div></div>
+<div id="nightNotice" class="notice" style="display:none">Avant 6 h, l’application reste sur la journée de travail précédente.</div>
+<div class="card"><div class="section"><h2>Calendrier</h2><button class="blue" onclick="openCalendar()">📅 Ouvrir</button></div><div class="small">Chaque journée modifie uniquement sa rotation métier.</div></div>
+<div class="card"><div class="section"><h2>Rotation du jour</h2><span class="badge" id="rotationLabel"></span></div><div class="grid" id="services"></div></div>
+<div class="card"><div class="next"><div class="small" id="nextLabel"></div><div class="next-name" id="nextName">—</div><span class="badge" id="nextRole">—</span></div><button class="success" style="width:100%;margin-top:10px" onclick="validateCurrent()">✅ Valider cette personne</button></div>
 <div class="card"><div class="section"><h2>Ordre actuel</h2><button class="secondary" onclick="undo()">↩️ Annuler</button></div><ol id="order"></ol></div>
-<div class="card"><div class="section"><h2>Présences</h2><button class="secondary" onclick="allPresent()">Tous présents</button></div><div id="presence"></div></div>
-<div class="card"><div class="section"><h2>Historique</h2><button class="danger" onclick="clearHistory()">Effacer</button></div><div id="history"></div></div>
+<div class="card"><div class="section"><h2>Historique récent</h2></div><div id="history"></div></div>
 </div>
 
 <div class="modal" id="settingsModal"><div class="sheet">
 <div class="section"><h2>Équipe et ancienneté</h2><button class="secondary" onclick="closeSettings()">Fermer</button></div>
-<p class="small">L’ordre ci-dessous est l’ordre d’ancienneté.</p><div id="editors"></div>
-<label>Date correspondant au Jour 1 — Fermeture</label><input type="date" id="cycleStart">
-<label>Heure de changement de journée de travail</label>
-<select id="dayCutoff"><option value="6">06 h 00</option></select>
-<div class="actions"><button class="primary" onclick="saveSettings()">Enregistrer</button><button class="danger" onclick="resetApp()">Réinitialiser</button></div>
+<div id="editors"></div>
+<label>Date du Jour 1 — Fermeture</label><input type="date" id="cycleStart">
+<button class="primary" style="width:100%;margin-top:12px" onclick="saveSettings()">Enregistrer</button>
 </div></div>
 
-<div class="modal" id="pastModal"><div class="sheet">
-<div class="section"><h2>Modifier une journée passée</h2><button class="secondary" onclick="closePastDays()">Fermer</button></div>
-<div class="date-tools"><input type="date" id="pastDate"><button class="blue" onclick="loadPastDate()">Afficher</button></div>
-<div class="cycle" style="margin-top:12px"><div class="small">Service correspondant</div><div id="pastServiceLabel" style="font-weight:900;margin-top:4px">—</div></div>
-<div id="pastEvents"></div>
-<button class="primary" style="width:100%" onclick="addPastEvent()">＋ Ajouter un départ / retour</button>
+<div class="modal" id="calendarModal"><div class="sheet">
+<div class="section"><h2>Calendrier</h2><button class="secondary" onclick="closeCalendar()">Fermer</button></div>
+<div class="month-nav"><button class="secondary" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="secondary" onclick="changeMonth(1)">›</button></div>
+<div class="calendar-head"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div>
+<div class="calendar" id="calendar"></div>
+<div id="dayPanel" style="margin-top:16px"></div>
 </div></div>
 
 <script>
-const SERVICES=[{id:"fermeture",name:"Fermeture",hours:"22h → 6h",action:"Prochain départ"},{id:"deuxieme",name:"Deuxième nuit",hours:"19h → 5h",action:"Prochain départ"},{id:"coupure",name:"Coupure",hours:"16h–19h / 22h–3h",action:"Prochain retour"},{id:"apresmidi",name:"Après-midi",hours:"14h → 19h",action:"Prochain départ"}];
-const defaults=[{id:"p1",name:"Rigoli Jean-Luc",role:"Chef",present:true,inRotation:false},{id:"p2",name:"Connen Renaud",role:"Chef",present:true,inRotation:false},{id:"p3",name:"Podgorny Boris",role:"Sous-chef",present:true,inRotation:true},{id:"p4",name:"Maccario Sebastien",role:"Employé",present:true,inRotation:true},{id:"p5",name:"Banti Hervé",role:"Employé",present:true,inRotation:true},{id:"p6",name:"Bernardi Jeremy",role:"Employé",present:true,inRotation:true},{id:"p7",name:"Gaza Sébastien",role:"Employé",present:true,inRotation:true}];
-let state=JSON.parse(localStorage.getItem("rotationEquipeV4"))||{people:defaults,rotations:{fermeture:["p3","p4","p5","p6","p7"],deuxieme:["p3","p4","p5","p6","p7"],coupure:["p3","p4","p5","p6","p7"],apresmidi:["p3","p4","p5","p6","p7"]},selected:"deuxieme",history:[],undo:[],cycleStart:"2026-08-01",dayCutoff:6};
-const connen=state.people.find(p=>p.id==="p2");
-if(connen){connen.role="Chef";connen.inRotation=false;}
-Object.keys(state.rotations||{}).forEach(k=>state.rotations[k]=(state.rotations[k]||[]).filter(id=>id!=="p2"));
-const save=()=>localStorage.setItem("rotationEquipeV4",JSON.stringify(state)),getP=id=>state.people.find(p=>p.id===id),svc=()=>SERVICES.find(s=>s.id===state.selected);
-function ids(){return state.people.filter(p=>p.inRotation).map(p=>p.id)}function normalize(){const a=ids();SERVICES.forEach(s=>{let r=(state.rotations[s.id]||[]).filter(x=>a.includes(x));a.forEach(x=>{if(!r.includes(x))r.push(x)});state.rotations[s.id]=r})}
-function isoLocal(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function operationalDate(now=new Date()){let d=new Date(now);if(d.getHours()<(state.dayCutoff||6))d.setDate(d.getDate()-1);d.setHours(12,0,0,0);return d}
-function cycleFor(dateStr){let s=new Date((state.cycleStart||"2026-08-01")+"T12:00:00"),t=new Date(dateStr+"T12:00:00");let i=((Math.floor((t-s)/86400000)%6)+6)%6;return{i,label:["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"][i],service:i<4?SERVICES[i]:null}}
-function eligible(){return state.rotations[state.selected].filter(id=>getP(id)?.present&&getP(id)?.inRotation)}
-function render(){normalize();let now=new Date(),op=operationalDate(now),opISO=isoLocal(op),c=cycleFor(opISO);document.getElementById("date").textContent=now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});document.getElementById("workDateLabel").textContent=op.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});document.getElementById("cycleLabel").textContent=c.label;document.getElementById("serviceBadge").textContent=c.i<4?"Service automatique":"Jour de repos";document.getElementById("nightNotice").style.display=now.getHours()<(state.dayCutoff||6)?"block":"none";if(c.service)state.selected=c.service.id;
-let sr=document.getElementById("services");sr.innerHTML="";SERVICES.forEach(s=>{let b=document.createElement("button");b.className="service"+(s.id===state.selected?" active":"");b.innerHTML="<b>"+s.name+"</b><div class='small'>"+s.hours+"</div>";b.onclick=()=>{state.selected=s.id;save();render()};sr.appendChild(b)});
-let e=eligible();document.getElementById("actionLabel").textContent=svc().action;document.getElementById("nextName").textContent=e.length?getP(e[0]).name:"Aucune personne présente";document.getElementById("nextRole").textContent=e.length?getP(e[0]).role:"—";
-let o=document.getElementById("order");o.innerHTML="";state.rotations[state.selected].forEach(id=>{let p=getP(id),li=document.createElement("li");li.innerHTML=`<div class="row"><div><b>${p.name}</b><div class="small">${p.role}</div></div><span class="status ${p.present?"":"absent"}">${p.present?"Présent":"Absent"}</span></div>`;o.appendChild(li)});
-document.getElementById("presence").innerHTML=state.people.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><div><b>${p.name}</b><div class="small">${p.role}${p.inRotation?"":" · Hors rotation"}</div></div><button class="${p.present?"secondary":"danger"}" onclick="toggle('${p.id}')">${p.present?"Présent":"Absent"}</button></div>`).join("");
-document.getElementById("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="history"><b>${getP(h.personId)?.name||"Personne"}</b> — ${SERVICES.find(x=>x.id===h.serviceId)?.name||"Service"}<br><span class="small">${h.type} · ${new Date(h.date).toLocaleString("fr-FR")}</span></div>`).join(""):"<div class='small'>Aucun événement.</div>";save()}
-function snap(){state.undo.push(JSON.stringify({...state,undo:[]}));if(state.undo.length>20)state.undo.shift()}function rotate(type){let e=eligible();if(!e.length)return alert("Aucune personne présente.");snap();let id=e[0],a=state.rotations[state.selected];state.rotations[state.selected]=a.filter(x=>x!==id).concat(id);state.history.push({id:crypto.randomUUID(),personId:id,serviceId:state.selected,type,date:new Date().toISOString()});save();render()}
-function validateTurn(){rotate(state.selected==="coupure"?"Retour validé":"Départ validé")}function skipTurn(){rotate("Passé exceptionnellement")}function toggle(id){getP(id).present=!getP(id).present;save();render()}function allPresent(){state.people.forEach(p=>p.present=true);save();render()}
-function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let x=state.undo.pop(),u=state.undo;state=JSON.parse(x);state.undo=u;save();render()}function clearHistory(){if(confirm("Effacer l’historique ?")){state.history=[];save();render()}}
-
-function openSettings(){renderEditors();document.getElementById("cycleStart").value=state.cycleStart;document.getElementById("dayCutoff").value=String(state.dayCutoff||6);document.getElementById("settingsModal").classList.add("open")}function closeSettings(){document.getElementById("settingsModal").classList.remove("open")}
-function renderEditors(){document.getElementById("editors").innerHTML=state.people.map((p,i)=>`<div class="member"><div class="row"><strong>${i+1}. ${p.name}</strong><span class="badge">${p.inRotation?"Dans la rotation":"Hors rotation"}</span></div><label>Nom</label><input id="n_${p.id}" value="${p.name}"><label>Fonction</label><select id="r_${p.id}"><option ${p.role==="Chef"?"selected":""}>Chef</option><option ${p.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${p.role==="Employé"?"selected":""}>Employé</option></select><label>Participation</label><select id="i_${p.id}"><option value="true" ${p.inRotation?"selected":""}>Dans la rotation</option><option value="false" ${!p.inRotation?"selected":""}>Hors rotation</option></select><div class="rank"><button class="primary" onclick="movePerson(${i},-1)">⬆️ Plus ancien</button><button class="secondary" onclick="movePerson(${i},1)">⬇️ Moins ancien</button></div></div>`).join("")}
-function capture(){state.people.forEach(p=>{let n=document.getElementById("n_"+p.id),r=document.getElementById("r_"+p.id),i=document.getElementById("i_"+p.id);if(n)p.name=n.value.trim()||p.name;if(r)p.role=r.value;if(i)p.inRotation=i.value==="true"})}
-function movePerson(i,d){capture();let j=i+d;if(j<0||j>=state.people.length)return;[state.people[i],state.people[j]]=[state.people[j],state.people[i]];renderEditors()}
-function saveSettings(){capture();state.cycleStart=document.getElementById("cycleStart").value||"2026-08-01";state.dayCutoff=parseInt(document.getElementById("dayCutoff").value||"6",10);normalize();save();closeSettings();render()}function resetApp(){if(confirm("Réinitialiser toute l’application ?")){localStorage.removeItem("rotationEquipeV4");location.reload()}}
-
-function openPastDays(){let d=operationalDate();d.setDate(d.getDate()-1);document.getElementById("pastDate").value=isoLocal(d);document.getElementById("pastModal").classList.add("open");loadPastDate()}
-function closePastDays(){document.getElementById("pastModal").classList.remove("open")}function eventWorkDate(iso){return isoLocal(operationalDate(new Date(iso)))}
-function loadPastDate(){let d=document.getElementById("pastDate").value;if(!d)return;let c=cycleFor(d);document.getElementById("pastServiceLabel").textContent=c.label+(c.service?" · "+c.service.name:"");let ev=state.history.filter(h=>eventWorkDate(h.date)===d);document.getElementById("pastEvents").innerHTML=ev.length?ev.map(h=>`<div class="past-item"><label>Personne</label><select id="pp_${h.id}">${state.people.filter(p=>p.inRotation).map(p=>`<option value="${p.id}" ${p.id===h.personId?"selected":""}>${p.name}</option>`).join("")}</select><label>Type</label><select id="pt_${h.id}"><option ${h.type==="Départ validé"?"selected":""}>Départ validé</option><option ${h.type==="Retour validé"?"selected":""}>Retour validé</option><option ${h.type==="Passé exceptionnellement"?"selected":""}>Passé exceptionnellement</option></select><label>Heure réelle</label><input type="time" id="ph_${h.id}" value="${new Date(h.date).toTimeString().slice(0,5)}"><div class="past-actions"><button class="success" onclick="savePastEvent('${h.id}')">Enregistrer</button><button class="danger" onclick="deletePastEvent('${h.id}')">Supprimer</button></div></div>`).join(""):"<div class='small' style='margin:12px 0'>Aucun événement enregistré pour cette journée de travail.</div>"}
-function realDateForWorkday(workDate,time){let [hh,mm]=time.split(":").map(Number),d=new Date(workDate+"T12:00:00");if(hh<(state.dayCutoff||6))d.setDate(d.getDate()+1);return isoLocal(d)+"T"+time+":00"}
-function addPastEvent(){let d=document.getElementById("pastDate").value;if(!d)return alert("Choisis une date.");let c=cycleFor(d),serviceId=c.service?c.service.id:"fermeture",first=state.people.find(p=>p.inRotation),time=serviceId==="fermeture"?"05:30":serviceId==="deuxieme"?"04:30":serviceId==="coupure"?"22:00":"18:30";state.history.push({id:crypto.randomUUID(),personId:first.id,serviceId,type:serviceId==="coupure"?"Retour validé":"Départ validé",date:realDateForWorkday(d,time)});save();loadPastDate();render()}
-function savePastEvent(id){let h=state.history.find(x=>x.id===id),d=document.getElementById("pastDate").value;if(!h)return;h.personId=document.getElementById("pp_"+id).value;h.type=document.getElementById("pt_"+id).value;let time=document.getElementById("ph_"+id).value||"12:00",c=cycleFor(d);if(c.service)h.serviceId=c.service.id;h.date=realDateForWorkday(d,time);save();loadPastDate();render()}
-function deletePastEvent(id){if(!confirm("Supprimer cet événement ?"))return;state.history=state.history.filter(x=>x.id!==id);save();loadPastDate();render()}
-
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));render();
-</script></body></html>
+const ROTATIONS=[
+{id:"j1_reste",cycle:0,name:"Première nuit",title:"Personnes restées",verb:"Resté jusqu’à la fin"},
+{id:"j2_reste",cycle:1,name:"Deuxième nuit",title:"Personnes restées",verb:"Resté jusqu’à la fin"},
+{id:"j3_retour",cycle:2,name:"Coupure",title:"Ordre de retour",verb:"Retour effectué"},
+{id:"j4_5eme",cycle:3,name:"Après-midi",title:"Départ 5ème",verb:"Départ 5ème effectué"}
+];
+const DEFAULT=[
+{id:"p1",name:"Rigoli Jean-Luc",role:"Chef",inRotation:false},
+{id:"p2",name:"Connen Renaud",role:"Chef",inRotation:false},
+{id:"p3",name:"Podgorny Boris",role:"Sous-chef",inRotation:true},
+{id:"p4",name:"Maccario Sebastien",role:"Employé",inRotation:true},
+{id:"p5",name:"Banti Hervé",role:"Employé",inRotation:true},
+{id:"p6",name:"Bernardi Jeremy",role:"Employé",inRotation:true},
+{id:"p7",name:"Gaza Sébastien",role:"Employé",inRotation:true}
+];
+let state=JSON.parse(localStorage.getItem("rotationEquipeV9"))||{people:DEFAULT,cycleStart:"2026-08-01",cutoff:6,selected:"j2_reste",events:[],undo:[]};
+let calMonth=new Date();calMonth.setDate(1);let selectedDate=null;
+const save=()=>localStorage.setItem("rotationEquipeV9",JSON.stringify(state));
+const p=id=>state.people.find(x=>x.id===id),active=()=>state.people.filter(x=>x.inRotation);
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function workDay(now=new Date()){let d=new Date(now);if(d.getHours()<(state.cutoff||6))d.setDate(d.getDate()-1);d.setHours(12,0,0,0);return d}
+function cycleFor(ds){let s=new Date(state.cycleStart+"T12:00:00"),d=new Date(ds+"T12:00:00"),i=((Math.floor((d-s)/86400000)%6)+6)%6;return{i,label:["Jour 1 · Fermeture","Jour 2 · Deuxième nuit","Jour 3 · Coupure","Jour 4 · Après-midi","Jour 5 · Repos","Jour 6 · Repos"][i],rotation:ROTATIONS.find(r=>r.cycle===i)||null}}
+function orderedEvents(){return [...state.events].sort((a,b)=>a.workDate.localeCompare(b.workDate)||a.time.localeCompare(b.time)||a.createdAt.localeCompare(b.createdAt))}
+function initialOrder(){return active().map(x=>x.id)}
+function orderBefore(rotationId,date){let o=initialOrder();for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate<date)){if(o.includes(e.personId))o=o.filter(id=>id!==e.personId).concat(e.personId)}return o}
+function orderAfter(rotationId,date){let o=orderBefore(rotationId,date);for(const e of orderedEvents().filter(x=>x.rotationId===rotationId&&x.workDate===date)){if(o.includes(e.personId))o=o.filter(id=>id!==e.personId).concat(e.personId)}return o}
+function context(){let wd=iso(workDay()),c=cycleFor(wd);return{wd,c}}
+function snap(){state.undo.push(JSON.stringify({...state,undo:[]}));if(state.undo.length>30)state.undo.shift()}
+function render(){
+ const now=new Date(),ctx=context();
+ document.getElementById("civil").textContent=now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+ document.getElementById("workDate").textContent=new Date(ctx.wd+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ document.getElementById("cycle").textContent=ctx.c.label;
+ document.getElementById("nightNotice").style.display=now.getHours()<(state.cutoff||6)?"block":"none";
+ if(ctx.c.rotation)state.selected=ctx.c.rotation.id;
+ const root=document.getElementById("services");root.innerHTML="";
+ ROTATIONS.forEach(r=>{let b=document.createElement("button");b.className="service"+(r.id===state.selected?" active":"");b.innerHTML="<b>"+r.name+"</b><div class='small'>"+r.title+"</div>";b.onclick=()=>{state.selected=r.id;save();render()};root.appendChild(b)});
+ const r=ROTATIONS.find(x=>x.id===state.selected),o=orderAfter(r.id,ctx.wd);
+ document.getElementById("rotationLabel").textContent=r.title;
+ document.getElementById("nextLabel").textContent=r.id.startsWith("j1")||r.id.startsWith("j2")?"Prochaine personne à faire rester":r.title;
+ document.getElementById("nextName").textContent=o.length?p(o[0]).name:"—";document.getElementById("nextRole").textContent=o.length?p(o[0]).role:"—";
+ document.getElementById("order").innerHTML=o.map(id=>`<li><b>${p(id).name}</b><div class="small">${p(id).role}</div></li>`).join("");
+ document.getElementById("history").innerHTML=orderedEvents().slice(-12).reverse().map(e=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${p(e.personId)?.name}</b> — ${ROTATIONS.find(r=>r.id===e.rotationId)?.verb}<br><span class="small">${e.workDate} · ${e.time}</span></div>`).join("")||"<div class='small'>Aucun événement.</div>";
+ save();
+}
+function validateCurrent(){let ctx=context(),r=ROTATIONS.find(x=>x.id===state.selected),o=orderAfter(r.id,ctx.wd);if(!o.length)return;snap();state.events.push({id:crypto.randomUUID(),rotationId:r.id,personId:o[0],workDate:ctx.wd,time:new Date().toTimeString().slice(0,5),createdAt:new Date().toISOString()});save();render()}
+function undo(){if(!state.undo.length)return alert("Aucune action à annuler.");let old=JSON.parse(state.undo.pop()),u=state.undo;state=old;state.undo=u;save();render()}
+function openSettings(){renderEditors();document.getElementById("cycleStart").value=state.cycleStart;document.getElementById("settingsModal").classList.add("open")}
+function closeSettings(){document.getElementById("settingsModal").classList.remove("open")}
+function renderEditors(){document.getElementById("editors").innerHTML=state.people.map((x,i)=>`<div class="member"><div class="row"><strong>${i+1}. ${x.name}</strong><span class="badge">${x.inRotation?"Dans la rotation":"Hors rotation"}</span></div><label>Nom</label><input id="n_${x.id}" value="${x.name}"><label>Fonction</label><select id="r_${x.id}"><option ${x.role==="Chef"?"selected":""}>Chef</option><option ${x.role==="Sous-chef"?"selected":""}>Sous-chef</option><option ${x.role==="Employé"?"selected":""}>Employé</option></select><label>Participation</label><select id="i_${x.id}"><option value="true" ${x.inRotation?"selected":""}>Dans la rotation</option><option value="false" ${!x.inRotation?"selected":""}>Hors rotation</option></select><div class="rank"><button class="primary" onclick="move(${i},-1)">⬆️ Plus ancien</button><button class="secondary" onclick="move(${i},1)">⬇️ Moins ancien</button></div></div>`).join("")}
+function capture(){state.people.forEach(x=>{let n=document.getElementById("n_"+x.id),r=document.getElementById("r_"+x.id),i=document.getElementById("i_"+x.id);if(n)x.name=n.value.trim()||x.name;if(r)x.role=r.value;if(i)x.inRotation=i.value==="true"})}
+function move(i,d){capture();let j=i+d;if(j<0||j>=state.people.length)return;[state.people[i],state.people[j]]=[state.people[j],state.people[i]];renderEditors()}
+function saveSettings(){capture();state.cycleStart=document.getElementById("cycleStart").value||"2026-08-01";save();closeSettings();render()}
+function openCalendar(){calMonth=new Date();calMonth.setDate(1);selectedDate=iso(workDay());document.getElementById("calendarModal").classList.add("open");renderCalendar()}
+function closeCalendar(){document.getElementById("calendarModal").classList.remove("open")}
+function changeMonth(d){calMonth.setMonth(calMonth.getMonth()+d);renderCalendar()}
+function renderCalendar(){
+ document.getElementById("monthLabel").textContent=calMonth.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+ let g=document.getElementById("calendar");g.innerHTML="";let y=calMonth.getFullYear(),m=calMonth.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();
+ for(let i=0;i<off;i++){let b=document.createElement("button");b.className="day empty";g.appendChild(b)}
+ for(let d=1;d<=last;d++){let ds=iso(new Date(y,m,d)),b=document.createElement("button"),has=state.events.some(e=>e.workDate===ds);b.className="day"+(ds===selectedDate?" selected":"")+(ds===iso(workDay())?" today":"");b.innerHTML=d+(has?"<div class='dot'></div>":"");b.onclick=()=>{selectedDate=ds;renderCalendar()};g.appendChild(b)}
+ renderDayPanel();
+}
+function renderDayPanel(){
+ let c=cycleFor(selectedDate),panel=document.getElementById("dayPanel");
+ if(!c.rotation){panel.innerHTML=`<div class="cycle"><b>${c.label}</b></div>`;return}
+ let before=orderBefore(c.rotation.id,selectedDate),events=orderedEvents().filter(e=>e.rotationId===c.rotation.id&&e.workDate===selectedDate),done=new Map(events.map(e=>[e.personId,e]));
+ panel.innerHTML=`<div class="cycle"><div class="small">${new Date(selectedDate+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div><b>${c.label} · ${c.rotation.title}</b></div>
+ <div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="small">Ordre au début du service</div><ol>${before.map(id=>`<li>${p(id).name}</li>`).join("")}</ol></div>
+ ${before.map(id=>{let e=done.get(id);return `<div class="person-day"><div class="row"><b>${p(id).name}</b><input type="checkbox" id="chk_${id}" ${e?"checked":""} style="width:22px;height:22px"></div><label>Heure individuelle</label><input type="time" id="time_${id}" value="${e?e.time:(c.rotation.id==="j3_retour"?"22:00":"05:00")}"></div>`}).join("")}
+ <button class="primary" style="width:100%" onclick="saveDay('${c.rotation.id}')">💾 Enregistrer cette journée</button>`;
+}
+function saveDay(rotationId){
+ snap();state.events=state.events.filter(e=>!(e.rotationId===rotationId&&e.workDate===selectedDate));
+ let before=orderBefore(rotationId,selectedDate);
+ before.forEach(id=>{if(document.getElementById("chk_"+id).checked)state.events.push({id:crypto.randomUUID(),rotationId,personId:id,workDate:selectedDate,time:document.getElementById("time_"+id).value||"12:00",createdAt:new Date().toISOString()})});
+ save();renderCalendar();render();alert("Journée enregistrée. La prochaine occurrence de cette rotation a été recalculée.");
+}
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
+render();
+</script>
+</body>
+</html>
