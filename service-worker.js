@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rotation-equipe-2-1-v1';
+const CACHE_NAME = 'rotation-equipe-2-4-v1';
 const APP_FILES = [
   './',
   './index.html',

@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 2.1",
+  "name": "Rotation Équipe 2.4",
   "short_name": "Rotation",
-  "description": "Gestion simple des rotations de l'équipe : nuits, coupure, retours et 5ème.",
+  "description": "Gestion des rotations avec modification directe depuis Aujourd’hui et Rotations.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
