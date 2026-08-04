@@ -163,3 +163,108 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
  padding:9px 11px;
  font-weight:900;
 }
+
+.team-edit-main{
+ border:0;
+ border-radius:12px;
+ background:#e7efff;
+ color:#194dbb;
+ padding:9px 12px;
+ font-weight:950;
+}
+.team-row{
+ display:grid;
+ grid-template-columns:34px 1fr;
+ align-items:center;
+ gap:10px;
+}
+.team-number{
+ width:28px;
+ height:28px;
+ border-radius:50%;
+ background:#edf2f8;
+ display:grid;
+ place-items:center;
+ font-size:12px;
+ font-weight:950;
+}
+.team-editor{display:none}
+.team-editor.open{display:block}
+.team-editor-list{display:grid;gap:10px}
+.team-edit-row{
+ display:grid;
+ grid-template-columns:32px 1fr auto;
+ align-items:center;
+ gap:8px;
+}
+.team-edit-number{
+ width:28px;
+ height:28px;
+ border-radius:50%;
+ background:#edf2f8;
+ display:grid;
+ place-items:center;
+ font-size:12px;
+ font-weight:950;
+}
+.team-edit-row input{
+ min-width:0;
+ width:100%;
+ border:1.5px solid var(--line);
+ border-radius:12px;
+ padding:12px;
+ font:inherit;
+ font-weight:800;
+ background:#fff;
+}
+.team-remove-btn{
+ border:0;
+ border-radius:10px;
+ background:#ffe8e8;
+ color:#aa2929;
+ padding:10px;
+ font-weight:900;
+}
+.team-remove-btn:disabled{opacity:.35}
+.team-add-btn{
+ width:100%;
+ margin-top:14px;
+ border:1.5px dashed #91adcf;
+ border-radius:13px;
+ background:#f7faff;
+ color:#2458d6;
+ padding:13px;
+ font-weight:950;
+}
+.team-editor-actions{
+ display:grid;
+ grid-template-columns:1fr 1.4fr;
+ gap:10px;
+ margin-top:16px;
+}
+.team-editor-actions button{
+ border:0;
+ border-radius:13px;
+ padding:13px 10px;
+ font-weight:950;
+}
+
+/* Coupure : trois actions sur une ligne */
+.buttons:has(.depart):has(.return):has(.stay){
+ grid-template-columns:repeat(3,1fr);
+}
+.calendar-action-buttons:has(.depart):has(.return):has(.stay){
+ grid-template-columns:repeat(3,1fr);
+}
+@media (max-width:390px){
+ .buttons:has(.depart):has(.return):has(.stay),
+ .calendar-action-buttons:has(.depart):has(.return):has(.stay){
+  gap:6px;
+ }
+ .buttons:has(.depart):has(.return):has(.stay) button,
+ .calendar-action-buttons:has(.depart):has(.return):has(.stay) button{
+  padding-left:5px;
+  padding-right:5px;
+  font-size:13px;
+ }
+}

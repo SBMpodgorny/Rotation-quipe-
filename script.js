@@ -1,13 +1,14 @@
-const PEOPLE=[
- {id:'bernardi',name:'Bernardi Jeremy'},
- {id:'banti',name:'Banti Hervé'},
- {id:'maccario',name:'Maccario Sebastien'},
- {id:'gaza',name:'Gaza Sébastien'},
- {id:'podgorny',name:'Podgorny Boris'}
+const DEFAULT_PEOPLE=[
+ {id:'bernardi',name:'Bernardi Jeremy',active:true},
+ {id:'banti',name:'Banti Hervé',active:true},
+ {id:'maccario',name:'Maccario Sebastien',active:true},
+ {id:'gaza',name:'Gaza Sébastien',active:true},
+ {id:'podgorny',name:'Podgorny Boris',active:true}
 ];
 const CYCLE_START='2026-08-01';
 const KEY='rotationEquipe21';
 const initialState=()=>({
+ team:DEFAULT_PEOPLE.map(person=>({...person})),
  stayQueue:['bernardi','banti','maccario','gaza','podgorny'],
  returnQueue:['gaza','bernardi','banti','maccario','podgorny'],
  fifthQueue:['podgorny','maccario','banti','bernardi','gaza'],
@@ -25,15 +26,30 @@ const initialState=()=>({
  ],undo:[]
 });
 let state=load();
+let PEOPLE=state.team;
 let pending=null;
 let editingQueueKey=null;
 let editingQueue=[];
+let teamDraft=[];
 let selectedCalendarDate=new Date();
 let calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
 
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));return s&&s.stayQueue?s:initialState()}catch{return initialState()}}
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY));
+  if(!saved||!saved.stayQueue)return initialState();
+  if(!Array.isArray(saved.team)){
+   saved.team=DEFAULT_PEOPLE.map(person=>({...person}));
+  }else{
+   saved.team=saved.team.map(person=>({...person,active:person.active!==false}));
+  }
+  if(!Array.isArray(saved.undo))saved.undo=[];
+  return saved;
+ }catch{return initialState()}
+}
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function p(id){return PEOPLE.find(x=>x.id===id)}
+function activePeople(){return PEOPLE.filter(person=>person.active!==false)}
 function localISO(d=new Date()){const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)}
 function dayInfo(date=new Date()){
  const start=new Date(CYCLE_START+'T00:00:00');const d=new Date(date);d.setHours(0,0,0,0);const days=Math.floor((d-start)/86400000);const idx=((days%6)+6)%6;
@@ -41,6 +57,7 @@ function dayInfo(date=new Date()){
 }
 function snapshot(){
  return JSON.stringify({
+  team:state.team.map(person=>({...person})),
   stayQueue:[...state.stayQueue],
   returnQueue:[...state.returnQueue],
   fifthQueue:[...state.fifthQueue],
@@ -73,9 +90,9 @@ function renderActions(service){
   root.innerHTML=`<div class="person"><div class="person-top"><div><div class="rank">5ème prévu</div><div class="name">${p(id).name}</div></div></div><div class="buttons one"><button class="action fifth" onclick="openAction('${id}','fifth','apres')">Parti</button></div></div>`;
   return;
  }
- root.innerHTML='<div class="people-grid">'+PEOPLE.map(person=>{
+ root.innerHTML='<div class="people-grid">'+activePeople().map(person=>{
   const bs=service==='coupure'
-   ?`<button class="action return" onclick="openAction('${person.id}','return','coupure')">Retour</button><button class="action stay" onclick="openAction('${person.id}','stay','coupure')">Resté</button>`
+   ?`<button class="action depart" onclick="openAction('${person.id}','depart','coupure')">Parti</button><button class="action return" onclick="openAction('${person.id}','return','coupure')">Retour</button><button class="action stay" onclick="openAction('${person.id}','stay','coupure')">Resté</button>`
    :`<button class="action depart" onclick="openAction('${person.id}','depart','${service}')">Parti</button><button class="action stay" onclick="openAction('${person.id}','stay','${service}')">Resté</button>`;
   return `<div class="person"><div class="person-top"><div class="name">${person.name}</div></div><div class="buttons">${bs}</div></div>`;
  }).join('')+'</div>';
@@ -119,7 +136,105 @@ function renderJournal(){
  if(!state.history.length){root.innerHTML='<div class="empty">Aucune décision enregistrée.</div>';return}
  root.innerHTML=[...state.history].reverse().map(h=>`<div class="journal-item"><div class="journal-main"><strong>${p(h.personId)?.name||'Personne inconnue'}</strong><span class="tag ${tagClass(h.action)}">${actionName(h.action)}</span></div><div class="journal-meta">${new Date(h.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${h.time} · ${serviceName(h.service)}</div></div>`).join('');
 }
-function renderTeam(){document.getElementById('team').innerHTML=PEOPLE.map(x=>`<div class="team-row">${x.name}</div>`).join('')}
+function renderTeam(){
+ const root=document.getElementById('team');
+ const active=activePeople();
+ root.innerHTML=active.length
+  ? active.map((person,index)=>`<div class="team-row"><span class="team-number">${index+1}</span><span>${person.name}</span></div>`).join('')
+  : '<div class="empty">Aucune personne dans l’équipe.</div>';
+}
+
+function makeTeamId(){
+ return 'person_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);
+}
+function openTeamEditor(){
+ teamDraft=activePeople().map(person=>({id:person.id,name:person.name,isNew:false}));
+ renderTeamEditor();
+ document.getElementById('team').style.display='none';
+ document.getElementById('teamEditMain').style.display='none';
+ document.getElementById('teamEditor').classList.add('open');
+}
+function renderTeamEditor(){
+ const root=document.getElementById('teamEditor');
+ root.innerHTML=`
+  <div class="team-editor-list">
+   ${teamDraft.map((person,index)=>`
+    <div class="team-edit-row">
+     <span class="team-edit-number">${index+1}</span>
+     <input type="text" value="${person.name.replace(/"/g,'&quot;')}" oninput="updateTeamDraftName(${index},this.value)" aria-label="Nom de la personne ${index+1}">
+     <button type="button" class="team-remove-btn" onclick="removeTeamDraft(${index})" ${teamDraft.length<=1?'disabled':''}>Retirer</button>
+    </div>`).join('')}
+  </div>
+  <button type="button" class="team-add-btn" onclick="addTeamDraft()">＋ Ajouter une personne</button>
+  <div class="team-editor-actions">
+   <button type="button" class="cancel" onclick="cancelTeamEditor()">Annuler</button>
+   <button type="button" class="save" onclick="saveTeamEditor()">Enregistrer l’équipe</button>
+  </div>`;
+}
+function updateTeamDraftName(index,value){
+ if(teamDraft[index])teamDraft[index].name=value;
+}
+function addTeamDraft(){
+ teamDraft.push({id:makeTeamId(),name:'Nouvelle personne',isNew:true});
+ renderTeamEditor();
+ setTimeout(()=>{
+  const inputs=document.querySelectorAll('#teamEditor input');
+  const input=inputs[inputs.length-1];
+  if(input){input.focus();input.select()}
+ },50);
+}
+function removeTeamDraft(index){
+ if(teamDraft.length<=1){
+  alert('L’équipe doit contenir au moins une personne.');
+  return;
+ }
+ teamDraft.splice(index,1);
+ renderTeamEditor();
+}
+function cancelTeamEditor(){
+ teamDraft=[];
+ document.getElementById('teamEditor').classList.remove('open');
+ document.getElementById('teamEditor').innerHTML='';
+ document.getElementById('team').style.display='';
+ document.getElementById('teamEditMain').style.display='';
+}
+function saveTeamEditor(){
+ const cleaned=teamDraft.map(person=>({...person,name:person.name.trim()}));
+ if(cleaned.some(person=>!person.name)){
+  alert('Chaque personne doit avoir un nom.');
+  return;
+ }
+ const normalized=cleaned.map(person=>person.name.toLocaleLowerCase('fr-FR'));
+ if(new Set(normalized).size!==normalized.length){
+  alert('Deux personnes ne peuvent pas avoir exactement le même nom.');
+  return;
+ }
+
+ pushUndo();
+ const keptIds=new Set(cleaned.map(person=>person.id));
+ const oldIds=new Set(activePeople().map(person=>person.id));
+
+ state.team=state.team.map(person=>{
+  const draft=cleaned.find(item=>item.id===person.id);
+  if(draft)return {...person,name:draft.name,active:true};
+  if(person.active!==false)return {...person,active:false};
+  return person;
+ });
+
+ cleaned.filter(person=>!state.team.some(existing=>existing.id===person.id))
+  .forEach(person=>state.team.push({id:person.id,name:person.name,active:true}));
+
+ const addedIds=cleaned.filter(person=>!oldIds.has(person.id)).map(person=>person.id);
+ state.stayQueue=state.stayQueue.filter(id=>keptIds.has(id)).concat(addedIds);
+ state.returnQueue=state.returnQueue.filter(id=>keptIds.has(id)).concat(addedIds);
+ state.fifthQueue=state.fifthQueue.filter(id=>keptIds.has(id)).concat(addedIds);
+
+ PEOPLE=state.team;
+ save();
+ cancelTeamEditor();
+ render();
+}
+
 function openAction(personId,action,service,dateValue=localISO()){
  pending={personId,action,service,editId:null};
  document.getElementById('modalTitle').textContent=`${actionName(action)} — ${p(personId).name}`;
@@ -214,6 +329,7 @@ function undoLast(){
  const previous=JSON.parse(state.undo.pop());
  const remaining=state.undo;
  state={...state,...previous,undo:remaining};
+ PEOPLE=state.team;
  save();render();
 }
 
@@ -271,19 +387,20 @@ function calendarActionButtons(info){
   return '<div class="empty">Aucun service prévu ce jour-là.</div>';
  }
  if(info.key==='apres'){
-  return '<div class="calendar-action-grid">'+PEOPLE.map(person=>`
+  return '<div class="calendar-action-grid">'+activePeople().map(person=>`
    <div class="calendar-person-action">
     <strong>${person.name}</strong>
     <button type="button" class="calendar-action-btn fifth" onclick="openAction('${person.id}','fifth','apres','${iso}')">Parti — 5ème</button>
    </div>`).join('')+'</div>';
  }
  const buttons=info.key==='coupure'
-  ? person=>`<button type="button" class="calendar-action-btn return" onclick="openAction('${person.id}','return','coupure','${iso}')">Retour</button>
+  ? person=>`<button type="button" class="calendar-action-btn depart" onclick="openAction('${person.id}','depart','coupure','${iso}')">Parti</button>
+              <button type="button" class="calendar-action-btn return" onclick="openAction('${person.id}','return','coupure','${iso}')">Retour</button>
               <button type="button" class="calendar-action-btn stay" onclick="openAction('${person.id}','stay','coupure','${iso}')">Resté</button>`
   : person=>`<button type="button" class="calendar-action-btn depart" onclick="openAction('${person.id}','depart','${info.key}','${iso}')">Parti</button>
               <button type="button" class="calendar-action-btn stay" onclick="openAction('${person.id}','stay','${info.key}','${iso}')">Resté</button>`;
 
- return '<div class="calendar-action-grid">'+PEOPLE.map(person=>`
+ return '<div class="calendar-action-grid">'+activePeople().map(person=>`
   <div class="calendar-person-action">
    <strong>${person.name}</strong>
    <div class="calendar-action-buttons">${buttons(person)}</div>
@@ -377,7 +494,7 @@ function showView(name,btn){
 }
 function resetToCorrectState(){
  if(!confirm('Réinitialiser toutes les données et revenir à la situation correcte du 3 août 2026 ?'))return;
- state=initialState();save();render();showView('today',document.querySelector('.tab'));
+ state=initialState();PEOPLE=state.team;save();render();showView('today',document.querySelector('.tab'));
 }
 document.getElementById('timeModal').addEventListener('click',e=>{if(e.target.id==='timeModal')closeModal()});
 document.getElementById('rotationModal').addEventListener('click',e=>{if(e.target.id==='rotationModal')closeRotationEditor()});

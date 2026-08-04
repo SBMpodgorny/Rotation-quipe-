@@ -7,15 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <meta name="theme-color" content="#eef3fa">
-<title>Rotation Équipe 2.8</title>
+<title>Rotation Équipe 3.0</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation Équipe 2.8</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
+<header><div><h1>Rotation Équipe 3.0</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
 
 <section id="todayView" class="view active">
  <div class="card day-card"><div class="eyebrow">Journée de travail</div><div class="day-title" id="workDate"></div><div class="day-type" id="workType"></div></div>
@@ -66,7 +66,17 @@
 </section>
 
 <section id="teamView" class="view">
- <div class="card"><div class="section-head"><h2>Équipe</h2></div><div id="team"></div><p class="hint">Les trois roulements sont indépendants : « Resté » agit sur le roulement commun nuits/coupure, « Retour » seulement sur les retours de coupure et « Parti » de l’après-midi seulement sur le 5ème.</p><button class="danger-link" onclick="resetToCorrectState()">Réinitialiser avec la situation correcte du 3 août 2026</button></div>
+ <div class="card">
+  <div class="section-head">
+   <h2>Équipe</h2>
+   <button type="button" class="team-edit-main" id="teamEditMain" onclick="openTeamEditor()">✏️ Modifier</button>
+  </div>
+  <div id="team"></div>
+  <div id="teamEditor" class="team-editor"></div>
+  <p class="hint">Tu peux modifier les noms, ajouter une personne ou retirer une personne de l’équipe. Une nouvelle personne est placée à la fin des trois roulements.</p>
+  <p class="hint">Les trois roulements restent indépendants : « Resté » agit sur le roulement commun nuits/coupure, « Retour » uniquement sur les retours et « Parti » de l’après-midi uniquement sur le 5ème.</p>
+  <button class="danger-link" onclick="resetToCorrectState()">Réinitialiser avec la situation correcte du 3 août 2026</button>
+ </div>
 </section>
 </div>
 
@@ -91,7 +101,7 @@
   </div>
 </div>
 
-<script src="script.js?v=28"></script>
+<script src="script.js?v=30"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));

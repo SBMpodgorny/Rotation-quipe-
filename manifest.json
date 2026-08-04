@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 2.8",
-  "short_name": "Rotation 2.8",
-  "description": "Rotations avec calendrier et modification des événements par date.",
+  "name": "Rotation Équipe 3.0",
+  "short_name": "Rotation 3.0",
+  "description": "Gestion des rotations avec Parti, Retour et Resté pendant la coupure.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
