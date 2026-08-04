@@ -120,12 +120,23 @@ function renderJournal(){
  root.innerHTML=[...state.history].reverse().map(h=>`<div class="journal-item"><div class="journal-main"><strong>${p(h.personId)?.name||'Personne inconnue'}</strong><span class="tag ${tagClass(h.action)}">${actionName(h.action)}</span></div><div class="journal-meta">${new Date(h.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${h.time} · ${serviceName(h.service)}</div></div>`).join('');
 }
 function renderTeam(){document.getElementById('team').innerHTML=PEOPLE.map(x=>`<div class="team-row">${x.name}</div>`).join('')}
-function openAction(personId,action,service){
- pending={personId,action,service};
+function openAction(personId,action,service,dateValue=localISO()){
+ pending={personId,action,service,editId:null};
  document.getElementById('modalTitle').textContent=`${actionName(action)} — ${p(personId).name}`;
- document.getElementById('modalText').textContent='L’heure ne sera jamais prise automatiquement.';
- document.getElementById('eventDate').value=localISO();
+ document.getElementById('modalText').textContent='L’heure est saisie manuellement.';
+ document.getElementById('eventDate').value=dateValue;
  document.getElementById('eventTime').value='';
+ document.getElementById('timeModal').classList.add('open');
+ setTimeout(()=>document.getElementById('eventTime').focus(),150);
+}
+function editCalendarEvent(eventId){
+ const event=state.history.find(h=>h.id===eventId);
+ if(!event)return;
+ pending={personId:event.personId,action:event.action,service:event.service,editId:event.id};
+ document.getElementById('modalTitle').textContent=`Modifier — ${p(event.personId)?.name||''}`;
+ document.getElementById('modalText').textContent=`${actionName(event.action)} · Modifiez la date ou l’heure.`;
+ document.getElementById('eventDate').value=event.date;
+ document.getElementById('eventTime').value=event.time;
  document.getElementById('timeModal').classList.add('open');
  setTimeout(()=>document.getElementById('eventTime').focus(),150);
 }
@@ -137,10 +148,19 @@ function confirmAction(){
  const time=document.getElementById('eventTime').value;
  if(!date||!time){alert('Entre la date et l’heure avant d’enregistrer.');return}
  pushUndo();
- if(pending.action==='stay')state.stayQueue=moveToEnd(state.stayQueue,pending.personId);
- if(pending.action==='return')state.returnQueue=moveToEnd(state.returnQueue,pending.personId);
- if(pending.action==='fifth')state.fifthQueue=moveToEnd(state.fifthQueue,pending.personId);
- state.history.push({id:'h'+Date.now(),...pending,date,time});
+
+ if(pending.editId){
+  const index=state.history.findIndex(h=>h.id===pending.editId);
+  if(index>=0){
+   state.history[index]={...state.history[index],date,time};
+  }
+ }else{
+  if(pending.action==='stay')state.stayQueue=moveToEnd(state.stayQueue,pending.personId);
+  if(pending.action==='return')state.returnQueue=moveToEnd(state.returnQueue,pending.personId);
+  if(pending.action==='fifth')state.fifthQueue=moveToEnd(state.fifthQueue,pending.personId);
+  const {editId,...eventData}=pending;
+  state.history.push({id:'h'+Date.now(),...eventData,date,time});
+ }
  save();closeModal();render();
 }
 function queueLabel(key){
@@ -244,6 +264,39 @@ function renderCalendar(){
  grid.innerHTML=output;
  renderSelectedDay();
 }
+
+function calendarActionButtons(info){
+ const iso=formatISODate(selectedCalendarDate);
+ if(info.key==='repos'){
+  return '<div class="empty">Aucun service prévu ce jour-là.</div>';
+ }
+ if(info.key==='apres'){
+  return '<div class="calendar-action-grid">'+PEOPLE.map(person=>`
+   <div class="calendar-person-action">
+    <strong>${person.name}</strong>
+    <button type="button" class="calendar-action-btn fifth" onclick="openAction('${person.id}','fifth','apres','${iso}')">Parti — 5ème</button>
+   </div>`).join('')+'</div>';
+ }
+ const buttons=info.key==='coupure'
+  ? person=>`<button type="button" class="calendar-action-btn return" onclick="openAction('${person.id}','return','coupure','${iso}')">Retour</button>
+              <button type="button" class="calendar-action-btn stay" onclick="openAction('${person.id}','stay','coupure','${iso}')">Resté</button>`
+  : person=>`<button type="button" class="calendar-action-btn depart" onclick="openAction('${person.id}','depart','${info.key}','${iso}')">Parti</button>
+              <button type="button" class="calendar-action-btn stay" onclick="openAction('${person.id}','stay','${info.key}','${iso}')">Resté</button>`;
+
+ return '<div class="calendar-action-grid">'+PEOPLE.map(person=>`
+  <div class="calendar-person-action">
+   <strong>${person.name}</strong>
+   <div class="calendar-action-buttons">${buttons(person)}</div>
+  </div>`).join('')+'</div>';
+}
+function toggleCalendarEventEditor(){
+ const editor=document.getElementById('calendarEventEditor');
+ if(!editor)return;
+ editor.classList.toggle('open');
+ const btn=document.getElementById('calendarEditToggle');
+ if(btn)btn.textContent=editor.classList.contains('open')?'Fermer la modification':'Ajouter un événement';
+}
+
 function renderSelectedDay(){
  const date=new Date(selectedCalendarDate);
  const info=dayInfo(date);
@@ -254,33 +307,41 @@ function renderSelectedDay(){
  document.getElementById('selectedDateService').textContent=info.title;
 
  const details=document.getElementById('selectedDayDetails');
+
+ let mainContent='';
  if(events.length){
-  details.innerHTML='<div class="calendar-detail-title">Événements enregistrés</div>'+
-   events.map(h=>`<div class="calendar-event">
-     <div><strong>${p(h.personId)?.name||'Personne inconnue'}</strong></div>
-     <div>${actionName(h.action)} · ${h.time}</div>
+  mainContent='<div class="calendar-detail-title">Événements enregistrés</div>'+
+   events.map(h=>`<div class="calendar-event editable-event">
+     <div>
+       <strong>${p(h.personId)?.name||'Personne inconnue'}</strong>
+       <div class="calendar-event-meta">${actionName(h.action)} · ${h.time}</div>
+     </div>
+     <button type="button" class="event-edit-btn" onclick="editCalendarEvent('${h.id}')">Modifier</button>
    </div>`).join('');
-  return;
- }
- if(formatISODate(date)<formatISODate(new Date())){
-  details.innerHTML='<div class="empty">Aucun événement enregistré pour cette date.</div>';
-  return;
- }
-
- let forecast='';
- if(info.key==='nuit1'||info.key==='nuit2'){
-  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
- }else if(info.key==='coupure'){
-  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain retour</div><div class="forecast-name">${p(state.returnQueue[0]).name}</div></div>
-  <div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
- }else if(info.key==='apres'){
-  forecast=`<div class="forecast-card"><div class="forecast-label">Prochain 5ème</div><div class="forecast-name">${p(state.fifthQueue[0]).name}</div></div>`;
+ }else if(formatISODate(date)<formatISODate(new Date())){
+  mainContent='<div class="empty">Aucun événement enregistré pour cette date.</div>';
  }else{
-  forecast='<div class="empty">Jour de repos prévu.</div>';
+  let forecast='';
+  if(info.key==='nuit1'||info.key==='nuit2'){
+   forecast=`<div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
+  }else if(info.key==='coupure'){
+   forecast=`<div class="forecast-card"><div class="forecast-label">Prochain retour</div><div class="forecast-name">${p(state.returnQueue[0]).name}</div></div>
+   <div class="forecast-card"><div class="forecast-label">Prochain à rester</div><div class="forecast-name">${p(state.stayQueue[0]).name}</div></div>`;
+  }else if(info.key==='apres'){
+   forecast=`<div class="forecast-card"><div class="forecast-label">Prochain 5ème</div><div class="forecast-name">${p(state.fifthQueue[0]).name}</div></div>`;
+  }else{
+   forecast='<div class="empty">Jour de repos prévu.</div>';
+  }
+  mainContent='<div class="calendar-detail-title">Prévision</div>'+forecast+
+   '<div class="forecast-note">La consultation du calendrier ne modifie pas les roulements.</div>';
  }
 
- details.innerHTML='<div class="calendar-detail-title">Prévision</div>'+forecast+
-  '<div class="forecast-note">La consultation du calendrier ne modifie pas les roulements.</div>';
+ details.innerHTML=mainContent+
+  `<button type="button" class="calendar-edit-toggle" id="calendarEditToggle" onclick="toggleCalendarEventEditor()">Ajouter un événement</button>
+   <div class="calendar-event-editor" id="calendarEventEditor">
+     <div class="calendar-detail-title">Saisir un événement pour cette date</div>
+     ${calendarActionButtons(info)}
+   </div>`;
 }
 function selectCalendarDate(iso){
  selectedCalendarDate=new Date(iso+'T12:00:00');

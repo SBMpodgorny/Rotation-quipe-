@@ -114,3 +114,52 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
 .forecast-name{margin-top:5px;font-size:19px;font-weight:950}
 .forecast-note{margin-top:12px;color:var(--muted);font-size:12px}
 .tabs{grid-template-columns:repeat(5,1fr)}
+
+.calendar-edit-toggle{
+ width:100%;
+ margin-top:18px;
+ border:0;
+ border-radius:14px;
+ background:#2458d6;
+ color:#fff;
+ padding:14px;
+ font-size:15px;
+ font-weight:950;
+}
+.calendar-event-editor{
+ display:none;
+ margin-top:14px;
+ padding-top:14px;
+ border-top:1px solid #e4eaf2;
+}
+.calendar-event-editor.open{display:block}
+.calendar-action-grid{display:grid;gap:10px}
+.calendar-person-action{
+ border:1.5px solid var(--line);
+ border-radius:15px;
+ padding:12px;
+ background:#f8fafc;
+}
+.calendar-person-action strong{display:block;margin-bottom:9px}
+.calendar-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.calendar-action-btn{
+ border:0;
+ border-radius:12px;
+ padding:11px 8px;
+ font-weight:950;
+ font-size:14px;
+}
+.calendar-action-btn.depart{background:#edf1f6;color:#17233a}
+.calendar-action-btn.stay{background:#e4f6eb;color:#14733f}
+.calendar-action-btn.return{background:#e6efff;color:#1d55c7}
+.calendar-action-btn.fifth{width:100%;background:#f4eaff;color:#6f31a8}
+.editable-event{align-items:center}
+.calendar-event-meta{margin-top:4px;color:var(--muted);font-size:13px}
+.event-edit-btn{
+ border:0;
+ border-radius:10px;
+ background:#e7efff;
+ color:#194dbb;
+ padding:9px 11px;
+ font-weight:900;
+}
