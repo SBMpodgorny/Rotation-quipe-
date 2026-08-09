@@ -7,15 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <meta name="theme-color" content="#eef3fa">
-<title>Rotation Équipe 3.4</title>
+<title>Rotation Équipe 3.5</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=35">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation Équipe 3.4</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
+<header><div><h1>Rotation Équipe 3.5</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
 
 <section id="todayView" class="view active">
  <div class="card day-card"><div class="eyebrow">Journée de travail</div><div class="day-title" id="workDate"></div><div class="day-type" id="workType"></div></div>
@@ -100,14 +100,6 @@
     </div>
   </div>
 </div>
-
-<script src="script.js?v=34"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
-}
-</script>
-
 <div class="modal" id="eventEditModal">
  <div class="sheet">
   <h3>Modifier l’événement</h3>
@@ -126,6 +118,16 @@ if ('serviceWorker' in navigator) {
   </div>
  </div>
 </div>
+
+
+<script src="script.js?v=35"></script>
+<script>
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js?v=35').catch(() => {});
+  }
+});
+</script>
 
 </body>
 </html>

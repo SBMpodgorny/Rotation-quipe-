@@ -604,7 +604,10 @@ function resetToCorrectState(){
  if(!confirm('Réinitialiser toutes les données et revenir à la situation correcte du 3 août 2026 ?'))return;
  state=initialState();PEOPLE=state.team;save();render();showView('today',document.querySelector('.tab'));
 }
-document.getElementById('timeModal').addEventListener('click',e=>{if(e.target.id==='timeModal')closeModal()});
-document.getElementById('rotationModal').addEventListener('click',e=>{if(e.target.id==='rotationModal')closeRotationEditor()});
-document.getElementById('eventEditModal').addEventListener('click',e=>{if(e.target.id==='eventEditModal')closeEventEditModal()});
-render();
+const timeModalEl=document.getElementById('timeModal');
+if(timeModalEl)timeModalEl.addEventListener('click',e=>{if(e.target.id==='timeModal')closeModal()});
+const rotationModalEl=document.getElementById('rotationModal');
+if(rotationModalEl)rotationModalEl.addEventListener('click',e=>{if(e.target.id==='rotationModal')closeRotationEditor()});
+const eventEditModalEl=document.getElementById('eventEditModal');
+if(eventEditModalEl)eventEditModalEl.addEventListener('click',e=>{if(e.target.id==='eventEditModal')closeEventEditModal()});
+try{render();}catch(err){console.error('Erreur initialisation Rotation Équipe',err);}
