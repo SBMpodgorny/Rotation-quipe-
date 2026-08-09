@@ -142,27 +142,26 @@ function renderJournal(){
   return;
  }
 
- // Regroupement principal par personne, classée par ordre alphabétique.
- const activeAndKnownIds=[...new Set(state.history.map(h=>h.personId))];
- const personGroups=activeAndKnownIds.map(personId=>{
+ const ids=[...new Set(state.history.map(h=>h.personId))];
+
+ const groups=ids.map(personId=>{
   const person=p(personId);
   const events=state.history
    .filter(h=>h.personId===personId)
    .sort((a,b)=>{
-    const da=`${a.date}T${a.time||'00:00'}:00`;
-    const db=`${b.date}T${b.time||'00:00'}:00`;
-    const dateCompare=da.localeCompare(db); // ordre chronologique : ancien -> récent
-    if(dateCompare!==0)return dateCompare;
-    return String(a.id).localeCompare(String(b.id));
+    const ta=`${a.date}T${a.time||'00:00'}:00`;
+    const tb=`${b.date}T${b.time||'00:00'}:00`;
+    const c=ta.localeCompare(tb);
+    return c!==0 ? c : String(a.id).localeCompare(String(b.id));
    });
+
   return {
-   personId,
    name:person?.name||'Personne inconnue',
    events
   };
  }).sort((a,b)=>a.name.localeCompare(b.name,'fr',{sensitivity:'base'}));
 
- root.innerHTML=personGroups.map(group=>`
+ root.innerHTML=groups.map(group=>`
   <section class="journal-person">
    <div class="journal-person-header">
     <div class="journal-person-avatar">${group.name.charAt(0).toUpperCase()}</div>
@@ -171,7 +170,6 @@ function renderJournal(){
      <div class="journal-person-count">${group.events.length} événement${group.events.length>1?'s':''}</div>
     </div>
    </div>
-
    <div class="journal-person-events">
     ${group.events.map(h=>`
      <div class="journal-event journal-event-${h.action}">

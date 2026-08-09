@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 3.3",
-  "short_name": "Rotation 3.3",
-  "description": "Journal classé par personne avec événements en ordre chronologique.",
+  "name": "Rotation Équipe 3.4",
+  "short_name": "Rotation 3.4",
+  "description": "Version stable avec journal classé par personne.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

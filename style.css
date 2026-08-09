@@ -385,7 +385,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
  .journal-event-top strong,.journal-time{font-size:15px}
 }
 
-/* Journal 3.3 : classement par personne, événements chronologiques */
+/* Journal 3.4 - regroupé par personne */
 #journal{display:grid;gap:18px}
 .journal-person{
  background:#fff;
@@ -423,9 +423,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
  font-size:12px;
  font-weight:700;
 }
-.journal-person-events{
- padding:4px 14px;
-}
+.journal-person-events{padding:4px 14px}
 .journal-person-events .journal-event{
  padding:13px 2px;
 }
