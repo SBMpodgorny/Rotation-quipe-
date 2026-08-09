@@ -31,6 +31,7 @@ let pending=null;
 let editingQueueKey=null;
 let editingQueue=[];
 let teamDraft=[];
+let editingEventId=null;
 let selectedCalendarDate=new Date();
 let calendarMonthDate=new Date(selectedCalendarDate.getFullYear(),selectedCalendarDate.getMonth(),1);
 
@@ -244,16 +245,72 @@ function openAction(personId,action,service,dateValue=localISO()){
  document.getElementById('timeModal').classList.add('open');
  setTimeout(()=>document.getElementById('eventTime').focus(),150);
 }
+function allowedActionsForService(service){
+ if(service==='coupure')return [
+  {value:'depart',label:'Parti'},
+  {value:'return',label:'Retour'},
+  {value:'stay',label:'Resté'}
+ ];
+ if(service==='apres')return [{value:'fifth',label:'Parti — 5ème'}];
+ return [
+  {value:'depart',label:'Parti'},
+  {value:'stay',label:'Resté'}
+ ];
+}
 function editCalendarEvent(eventId){
  const event=state.history.find(h=>h.id===eventId);
  if(!event)return;
- pending={personId:event.personId,action:event.action,service:event.service,editId:event.id};
- document.getElementById('modalTitle').textContent=`Modifier — ${p(event.personId)?.name||''}`;
- document.getElementById('modalText').textContent=`${actionName(event.action)} · Modifiez la date ou l’heure.`;
- document.getElementById('eventDate').value=event.date;
- document.getElementById('eventTime').value=event.time;
- document.getElementById('timeModal').classList.add('open');
- setTimeout(()=>document.getElementById('eventTime').focus(),150);
+ editingEventId=eventId;
+
+ const personSelect=document.getElementById('editEventPerson');
+ personSelect.innerHTML=activePeople().map(person=>
+  `<option value="${person.id}" ${person.id===event.personId?'selected':''}>${person.name}</option>`
+ ).join('');
+
+ const actionSelect=document.getElementById('editEventAction');
+ actionSelect.innerHTML=allowedActionsForService(event.service).map(action=>
+  `<option value="${action.value}" ${action.value===event.action?'selected':''}>${action.label}</option>`
+ ).join('');
+
+ document.getElementById('editEventDate').value=event.date;
+ document.getElementById('editEventTime').value=event.time;
+ document.getElementById('eventEditModal').classList.add('open');
+}
+function closeEventEditModal(){
+ document.getElementById('eventEditModal').classList.remove('open');
+ editingEventId=null;
+}
+function saveEditedEvent(){
+ if(!editingEventId)return;
+ const index=state.history.findIndex(h=>h.id===editingEventId);
+ if(index<0)return;
+
+ const personId=document.getElementById('editEventPerson').value;
+ const action=document.getElementById('editEventAction').value;
+ const date=document.getElementById('editEventDate').value;
+ const time=document.getElementById('editEventTime').value;
+
+ if(!personId||!action||!date||!time){
+  alert('Renseigne la personne, l’action, la date et l’heure.');
+  return;
+ }
+ pushUndo();
+ state.history[index]={...state.history[index],personId,action,date,time};
+ save();
+ closeEventEditModal();
+ render();
+}
+function deleteEditedEvent(){
+ if(!editingEventId)return;
+ const event=state.history.find(h=>h.id===editingEventId);
+ if(!event)return;
+ const personName=p(event.personId)?.name||'cette personne';
+ if(!confirm(`Supprimer définitivement l’événement "${actionName(event.action)}" de ${personName} ?`))return;
+ pushUndo();
+ state.history=state.history.filter(h=>h.id!==editingEventId);
+ save();
+ closeEventEditModal();
+ render();
 }
 function closeModal(){document.getElementById('timeModal').classList.remove('open');pending=null}
 function moveToEnd(arr,id){return arr.filter(x=>x!==id).concat(id)}
@@ -498,4 +555,5 @@ function resetToCorrectState(){
 }
 document.getElementById('timeModal').addEventListener('click',e=>{if(e.target.id==='timeModal')closeModal()});
 document.getElementById('rotationModal').addEventListener('click',e=>{if(e.target.id==='rotationModal')closeRotationEditor()});
+document.getElementById('eventEditModal').addEventListener('click',e=>{if(e.target.id==='eventEditModal')closeEventEditModal()});
 render();

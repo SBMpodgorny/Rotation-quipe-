@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 3.0",
-  "short_name": "Rotation 3.0",
-  "description": "Gestion des rotations avec Parti, Retour et Resté pendant la coupure.",
+  "name": "Rotation Équipe 3.1",
+  "short_name": "Rotation 3.1",
+  "description": "Modification et suppression des événements depuis le calendrier.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

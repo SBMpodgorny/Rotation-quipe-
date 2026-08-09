@@ -7,15 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Rotation Équipe">
 <meta name="theme-color" content="#eef3fa">
-<title>Rotation Équipe 3.0</title>
+<title>Rotation Équipe 3.1</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="style.css?v=30">
+<link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
 <div class="app">
-<header><div><h1>Rotation Équipe 3.0</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
+<header><div><h1>Rotation Équipe 3.1</h1><div class="sub" id="nowLabel"></div></div><div class="pill" id="cyclePill">Cycle 4/2</div></header>
 
 <section id="todayView" class="view active">
  <div class="card day-card"><div class="eyebrow">Journée de travail</div><div class="day-title" id="workDate"></div><div class="day-type" id="workType"></div></div>
@@ -101,11 +101,31 @@
   </div>
 </div>
 
-<script src="script.js?v=30"></script>
+<script src="script.js?v=31"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
 }
 </script>
+
+<div class="modal" id="eventEditModal">
+ <div class="sheet">
+  <h3>Modifier l’événement</h3>
+  <label for="editEventPerson">Personne</label>
+  <select id="editEventPerson"></select>
+  <label for="editEventAction">Action</label>
+  <select id="editEventAction"></select>
+  <label for="editEventDate">Date</label>
+  <input type="date" id="editEventDate">
+  <label for="editEventTime">Heure</label>
+  <input type="time" id="editEventTime" step="60">
+  <button type="button" class="delete-event-btn" onclick="deleteEditedEvent()">Supprimer l’événement</button>
+  <div class="modal-actions">
+   <button class="cancel" onclick="closeEventEditModal()">Annuler</button>
+   <button class="save" onclick="saveEditedEvent()">Enregistrer</button>
+  </div>
+ </div>
+</div>
+
 </body>
 </html>
