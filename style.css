@@ -277,3 +277,155 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
  width:100%;margin:8px 0 14px;border:0;border-radius:13px;
  background:#ffe7e7;color:#a62929;padding:13px 10px;font-size:15px;font-weight:950;
 }
+
+/* Journal 3.2 : regroupement par date et lecture visuelle */
+#journal{display:grid;gap:18px}
+.journal-day{
+ background:#fff;
+ border:1px solid #e1e8f0;
+ border-radius:22px;
+ overflow:hidden;
+ box-shadow:0 4px 14px rgba(23,35,58,.045);
+}
+.journal-day-header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ padding:17px 18px 14px;
+ background:#f6f9fd;
+ border-bottom:1px solid #e4eaf2;
+}
+.journal-day-title{
+ font-size:19px;
+ font-weight:950;
+ text-transform:capitalize;
+}
+.journal-day-count{
+ margin-top:3px;
+ color:var(--muted);
+ font-size:12px;
+ font-weight:700;
+}
+.journal-date-chip{
+ min-width:54px;
+ text-align:center;
+ border-radius:12px;
+ padding:8px 9px;
+ background:#e8f0ff;
+ color:#2458d6;
+ font-size:13px;
+ font-weight:950;
+}
+.journal-day-events{padding:4px 14px}
+.journal-event{
+ position:relative;
+ display:grid;
+ grid-template-columns:42px 1fr;
+ gap:11px;
+ align-items:center;
+ padding:14px 2px;
+ border-bottom:1px solid #e8edf3;
+}
+.journal-event:last-child{border-bottom:0}
+.journal-event-icon{
+ width:38px;
+ height:38px;
+ border-radius:12px;
+ display:grid;
+ place-items:center;
+ font-size:18px;
+ font-weight:950;
+}
+.journal-event-content{min-width:0}
+.journal-event-top{
+ display:flex;
+ align-items:baseline;
+ justify-content:space-between;
+ gap:10px;
+}
+.journal-event-top strong{
+ min-width:0;
+ font-size:17px;
+ font-weight:950;
+ line-height:1.2;
+}
+.journal-time{
+ flex:none;
+ font-size:17px;
+ font-weight:950;
+ color:#17233a;
+}
+.journal-event-bottom{
+ display:flex;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:7px;
+ margin-top:7px;
+}
+.journal-service{
+ color:var(--muted);
+ font-size:13px;
+ font-weight:750;
+}
+.journal-event .tag{
+ padding:5px 8px;
+ border-radius:9px;
+ font-size:11px;
+ font-weight:950;
+}
+.journal-event-icon.tag-depart{background:#edf1f6;color:#40516a}
+.journal-event-icon.tag-stay{background:#e4f6eb;color:#14733f}
+.journal-event-icon.tag-return{background:#e6efff;color:#1d55c7}
+.journal-event-icon.tag-fifth{background:#f4eaff;color:#6f31a8}
+@media(max-width:390px){
+ .journal-day-header{padding-left:14px;padding-right:14px}
+ .journal-event{grid-template-columns:36px 1fr}
+ .journal-event-icon{width:34px;height:34px}
+ .journal-event-top strong,.journal-time{font-size:15px}
+}
+
+/* Journal 3.3 : classement par personne, événements chronologiques */
+#journal{display:grid;gap:18px}
+.journal-person{
+ background:#fff;
+ border:1px solid #e1e8f0;
+ border-radius:22px;
+ overflow:hidden;
+ box-shadow:0 4px 14px rgba(23,35,58,.045);
+}
+.journal-person-header{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:16px 18px;
+ background:#f6f9fd;
+ border-bottom:1px solid #e4eaf2;
+}
+.journal-person-avatar{
+ width:42px;
+ height:42px;
+ border-radius:14px;
+ display:grid;
+ place-items:center;
+ background:#e7efff;
+ color:#2458d6;
+ font-size:18px;
+ font-weight:950;
+}
+.journal-person-name{
+ font-size:19px;
+ font-weight:950;
+}
+.journal-person-count{
+ margin-top:2px;
+ color:var(--muted);
+ font-size:12px;
+ font-weight:700;
+}
+.journal-person-events{
+ padding:4px 14px;
+}
+.journal-person-events .journal-event{
+ padding:13px 2px;
+}

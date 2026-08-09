@@ -132,10 +132,63 @@ function renderQueues(){
 function serviceName(s){return {nuit1:'Première nuit',nuit2:'Deuxième nuit',coupure:'Coupure',apres:'Après-midi'}[s]||s}
 function actionName(a){return {depart:'Parti',stay:'Resté',return:'Retour',fifth:'Parti — 5ème'}[a]}
 function tagClass(a){return a==='stay'?'tag-stay':a==='return'?'tag-return':a==='fifth'?'tag-fifth':'tag-depart'}
+function journalActionIcon(action){
+ return {depart:'↗',stay:'●',return:'↩',fifth:'⑤'}[action]||'•';
+}
 function renderJournal(){
  const root=document.getElementById('journal');
- if(!state.history.length){root.innerHTML='<div class="empty">Aucune décision enregistrée.</div>';return}
- root.innerHTML=[...state.history].reverse().map(h=>`<div class="journal-item"><div class="journal-main"><strong>${p(h.personId)?.name||'Personne inconnue'}</strong><span class="tag ${tagClass(h.action)}">${actionName(h.action)}</span></div><div class="journal-meta">${new Date(h.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${h.time} · ${serviceName(h.service)}</div></div>`).join('');
+ if(!state.history.length){
+  root.innerHTML='<div class="empty">Aucune décision enregistrée.</div>';
+  return;
+ }
+
+ // Regroupement principal par personne, classée par ordre alphabétique.
+ const activeAndKnownIds=[...new Set(state.history.map(h=>h.personId))];
+ const personGroups=activeAndKnownIds.map(personId=>{
+  const person=p(personId);
+  const events=state.history
+   .filter(h=>h.personId===personId)
+   .sort((a,b)=>{
+    const da=`${a.date}T${a.time||'00:00'}:00`;
+    const db=`${b.date}T${b.time||'00:00'}:00`;
+    const dateCompare=da.localeCompare(db); // ordre chronologique : ancien -> récent
+    if(dateCompare!==0)return dateCompare;
+    return String(a.id).localeCompare(String(b.id));
+   });
+  return {
+   personId,
+   name:person?.name||'Personne inconnue',
+   events
+  };
+ }).sort((a,b)=>a.name.localeCompare(b.name,'fr',{sensitivity:'base'}));
+
+ root.innerHTML=personGroups.map(group=>`
+  <section class="journal-person">
+   <div class="journal-person-header">
+    <div class="journal-person-avatar">${group.name.charAt(0).toUpperCase()}</div>
+    <div>
+     <div class="journal-person-name">${group.name}</div>
+     <div class="journal-person-count">${group.events.length} événement${group.events.length>1?'s':''}</div>
+    </div>
+   </div>
+
+   <div class="journal-person-events">
+    ${group.events.map(h=>`
+     <div class="journal-event journal-event-${h.action}">
+      <div class="journal-event-icon ${tagClass(h.action)}">${journalActionIcon(h.action)}</div>
+      <div class="journal-event-content">
+       <div class="journal-event-top">
+        <strong>${new Date(h.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}</strong>
+        <span class="journal-time">${h.time}</span>
+       </div>
+       <div class="journal-event-bottom">
+        <span class="tag ${tagClass(h.action)}">${actionName(h.action)}</span>
+        <span class="journal-service">${serviceName(h.service)}</span>
+       </div>
+      </div>
+     </div>`).join('')}
+   </div>
+  </section>`).join('');
 }
 function renderTeam(){
  const root=document.getElementById('team');
