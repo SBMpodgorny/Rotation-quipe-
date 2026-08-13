@@ -129,7 +129,7 @@ function renderQueues(){
   queueHTML('returnQueue','Coupure','Ordre prioritaire des retours',state.returnQueue)+
   queueHTML('fifthQueue','5ème','Ordre de départ de l’après-midi',state.fifthQueue);
 }
-function serviceName(s){return {nuit1:'Première nuit',nuit2:'Deuxième nuit',coupure:'Coupure',apres:'Après-midi'}[s]||s}
+function serviceName(s){return {nuit1:'Première nuit',nuit2:'Deuxième nuit',coupure:'Coupure',apres:'Après-midi',repos:'Repos travaillé'}[s]||s}
 function actionName(a){return {depart:'Parti',stay:'Resté',return:'Retour',fifth:'Parti — 5ème'}[a]}
 function tagClass(a){return a==='stay'?'tag-stay':a==='return'?'tag-return':a==='fifth'?'tag-fifth':'tag-depart'}
 function journalActionIcon(action){
@@ -303,6 +303,12 @@ function allowedActionsForService(service){
   {value:'stay',label:'Resté'}
  ];
  if(service==='apres')return [{value:'fifth',label:'Parti — 5ème'}];
+ if(service==='repos')return [
+  {value:'depart',label:'Parti'},
+  {value:'stay',label:'Resté'},
+  {value:'return',label:'Retour'},
+  {value:'fifth',label:'Parti — 5ème'}
+ ];
  return [
   {value:'depart',label:'Parti'},
   {value:'stay',label:'Resté'}
@@ -492,7 +498,17 @@ function renderCalendar(){
 function calendarActionButtons(info){
  const iso=formatISODate(selectedCalendarDate);
  if(info.key==='repos'){
-  return '<div class="empty">Aucun service prévu ce jour-là.</div>';
+  return `<div class="rest-work-notice">Repos prévu — saisie exceptionnelle si vous travaillez ce jour-là.</div>
+   <div class="calendar-action-grid">${activePeople().map(person=>`
+    <div class="calendar-person-action">
+     <strong>${person.name}</strong>
+     <div class="calendar-action-buttons rest-action-buttons">
+      <button type="button" class="calendar-action-btn depart" onclick="openAction('${person.id}','depart','repos','${iso}')">Parti</button>
+      <button type="button" class="calendar-action-btn stay" onclick="openAction('${person.id}','stay','repos','${iso}')">Resté</button>
+      <button type="button" class="calendar-action-btn return" onclick="openAction('${person.id}','return','repos','${iso}')">Retour</button>
+      <button type="button" class="calendar-action-btn fifth" onclick="openAction('${person.id}','fifth','repos','${iso}')">5ème</button>
+     </div>
+    </div>`).join('')}</div>`;
  }
  if(info.key==='apres'){
   return '<div class="calendar-action-grid">'+activePeople().map(person=>`
@@ -555,7 +571,7 @@ function renderSelectedDay(){
   }else if(info.key==='apres'){
    forecast=`<div class="forecast-card"><div class="forecast-label">Prochain 5ème</div><div class="forecast-name">${p(state.fifthQueue[0]).name}</div></div>`;
   }else{
-   forecast='<div class="empty">Jour de repos prévu.</div>';
+   forecast='<div class="forecast-card"><div class="forecast-label">Jour de repos prévu</div><div class="forecast-name">Travail exceptionnel possible</div></div><div class="forecast-note">Utilise « Ajouter un événement » si vous travaillez ce jour-là.</div>';
   }
   mainContent='<div class="calendar-detail-title">Prévision</div>'+forecast+
    '<div class="forecast-note">La consultation du calendrier ne modifie pas les roulements.</div>';

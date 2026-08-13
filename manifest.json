@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 3.5",
-  "short_name": "Rotation 3.5",
-  "description": "Version stable avec démarrage sécurisé et journal par personne.",
+  "name": "Rotation Équipe 3.6",
+  "short_name": "Rotation 3.6",
+  "description": "Ajout d’événements de travail exceptionnels pendant les jours de repos.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

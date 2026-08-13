@@ -427,3 +427,21 @@ header{display:flex;justify-content:space-between;align-items:flex-start;margin:
 .journal-person-events .journal-event{
  padding:13px 2px;
 }
+
+/* Version 3.6 - travail exceptionnel pendant un jour de repos */
+.rest-work-notice{
+ margin-bottom:12px;
+ padding:12px 13px;
+ border-radius:14px;
+ background:#fff7e8;
+ color:#8a5a00;
+ font-size:13px;
+ font-weight:850;
+ line-height:1.35;
+}
+.rest-action-buttons{
+ grid-template-columns:repeat(2,1fr)!important;
+}
+.rest-action-buttons .calendar-action-btn{
+ min-height:42px;
+}
