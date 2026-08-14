@@ -1,9 +1,9 @@
-const CACHE_NAME = 'rotation-equipe-3-6-v1';
+const CACHE_NAME = 'rotation-equipe-3-7-v1';
 const APP_FILES = [
   './',
   './index.html',
-  './style.css?v=36',
-  './script.js?v=36',
+  './style.css?v=37',
+  './script.js?v=37',
   './manifest.json',
   './icon.svg'
 ];

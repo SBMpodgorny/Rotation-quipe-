@@ -52,8 +52,14 @@ function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function p(id){return PEOPLE.find(x=>x.id===id)}
 function activePeople(){return PEOPLE.filter(person=>person.active!==false)}
 function localISO(d=new Date()){const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)}
+function operationalDate(date=new Date()){
+ const d=new Date(date);
+ // La journée de service change à 07:00, pas à minuit.
+ if(d.getHours()<7)d.setDate(d.getDate()-1);
+ return d;
+}
 function dayInfo(date=new Date()){
- const start=new Date(CYCLE_START+'T00:00:00');const d=new Date(date);d.setHours(0,0,0,0);const days=Math.floor((d-start)/86400000);const idx=((days%6)+6)%6;
+ const start=new Date(CYCLE_START+'T00:00:00');const d=operationalDate(date);d.setHours(0,0,0,0);const days=Math.floor((d-start)/86400000);const idx=((days%6)+6)%6;
  return [{key:'nuit1',title:'Jour 1 · Première nuit'},{key:'nuit2',title:'Jour 2 · Deuxième nuit'},{key:'coupure',title:'Jour 3 · Coupure'},{key:'apres',title:'Jour 4 · Après-midi'},{key:'repos',title:'Jour 5 · Repos'},{key:'repos',title:'Jour 6 · Repos'}][idx]
 }
 function snapshot(){
@@ -72,7 +78,8 @@ function pushUndo(){
 function render(){
  const now=new Date();
  document.getElementById('nowLabel').textContent=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
- document.getElementById('workDate').textContent=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ const workDay=operationalDate(now);
+ document.getElementById('workDate').textContent=workDay.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
  const info=dayInfo(now);
  document.getElementById('workType').textContent=info.title;
  renderActions(info.key);

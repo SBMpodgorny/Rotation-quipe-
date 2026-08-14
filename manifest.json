@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 3.6",
-  "short_name": "Rotation 3.6",
-  "description": "Ajout d’événements de travail exceptionnels pendant les jours de repos.",
+  "name": "Rotation Équipe 3.7",
+  "short_name": "Rotation 3.7",
+  "description": "Journée de service décalée à 07:00 pour les nuits.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
