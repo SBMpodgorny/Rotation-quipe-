@@ -1,7 +1,7 @@
 {
-  "name": "Rotation Équipe 3.7",
-  "short_name": "Rotation 3.7",
-  "description": "Journée de service décalée à 07:00 pour les nuits.",
+  "name": "Rotation Équipe 3.8",
+  "short_name": "Rotation 3.8",
+  "description": "Journée de service à 07:00, y compris pour les dates du journal.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

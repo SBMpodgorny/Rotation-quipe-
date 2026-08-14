@@ -58,6 +58,9 @@ function operationalDate(date=new Date()){
  if(d.getHours()<7)d.setDate(d.getDate()-1);
  return d;
 }
+function operationalISO(date=new Date()){
+ return localISO(operationalDate(date));
+}
 function dayInfo(date=new Date()){
  const start=new Date(CYCLE_START+'T00:00:00');const d=operationalDate(date);d.setHours(0,0,0,0);const days=Math.floor((d-start)/86400000);const idx=((days%6)+6)%6;
  return [{key:'nuit1',title:'Jour 1 · Première nuit'},{key:'nuit2',title:'Jour 2 · Deuxième nuit'},{key:'coupure',title:'Jour 3 · Coupure'},{key:'apres',title:'Jour 4 · Après-midi'},{key:'repos',title:'Jour 5 · Repos'},{key:'repos',title:'Jour 6 · Repos'}][idx]
@@ -294,10 +297,10 @@ function saveTeamEditor(){
  render();
 }
 
-function openAction(personId,action,service,dateValue=localISO()){
+function openAction(personId,action,service,dateValue=operationalISO()){
  pending={personId,action,service,editId:null};
  document.getElementById('modalTitle').textContent=`${actionName(action)} — ${p(personId).name}`;
- document.getElementById('modalText').textContent='L’heure est saisie manuellement.';
+ document.getElementById('modalText').textContent='L’heure est saisie manuellement. Avant 07:00, l’événement est rattaché à la journée de service de la veille.';
  document.getElementById('eventDate').value=dateValue;
  document.getElementById('eventTime').value='';
  document.getElementById('timeModal').classList.add('open');
